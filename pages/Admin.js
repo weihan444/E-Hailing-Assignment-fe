@@ -7,7 +7,7 @@ function Admin() {
     return (
         <div style={{backgroundImage: "url(admin-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
             <Head>
-                <title>🔞ADMIN ONLY 🔞</title>
+                <title>🔞ADMIN ONLY🔞</title>
                 <link rel="icon" href="/pupg-icon.ico" />
             </Head>
 
