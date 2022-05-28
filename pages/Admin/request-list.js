@@ -2,6 +2,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { request } from '../data/data'
 import Head from 'next/head'
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import Link from 'next/link'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 
 const columns = [
     { field: 'customer', headerName: 'Customer', sortable: false, width: 300 },
@@ -11,6 +16,25 @@ const columns = [
     { field: 'startpoint', headerName: 'Location', sortable: false, width: 270 },
     { field: 'destination', headerName: 'Destination', sortable: false, width: 270 },
   ];
+
+function CustomFooterStatusComponent(props){
+    return (
+        <div>
+            <Link href='/Admin'>
+                <IconButton aria-label="back">
+                    <KeyboardBackspaceIcon />
+                </IconButton>
+            </Link>
+            <IconButton aria-label="delete">
+            <   DeleteIcon />
+            </IconButton>
+            <IconButton aria-label="edit">
+                <EditIcon />
+            </IconButton>
+            
+        </div>
+    )
+}
 
 const requestList = () => {
     const [tableData, setTableData] = useState([])
@@ -40,7 +64,9 @@ const requestList = () => {
                     columns={columns}
                     checkboxSelection
                     disableColumnMenu
-                    sx={{color: "black"}}
+                    components={{
+                        Footer: CustomFooterStatusComponent
+                      }}
                 />
             </div>
         </div>
