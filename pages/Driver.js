@@ -4,7 +4,7 @@ import Head from 'next/head'
 
 function Driver() {
     return (
-        <div>
+        <div style={{backgroundImage: "url(driver-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
             
             <Head>
                 <title>Driver</title>

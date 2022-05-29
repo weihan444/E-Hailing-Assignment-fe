@@ -13,7 +13,7 @@ export default function Home() {
             <div style={{
                 position: "absolute", 
                 top: "50%", 
-                left: "50%",
+                left: "80%",
                 transform: "translate(-50%, -50%)"
                 }}>
                 <HomePage />  
