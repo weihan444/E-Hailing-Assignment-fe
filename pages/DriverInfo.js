@@ -1,10 +1,10 @@
-import PassengerPageComponent from "../Component/PassengerPageComponent"
+import DriverInfoPageComponent from "../Component/DriverInfoPageComponent"
 import Head from 'next/head'
 
 
-function Passenger() {
+function DriverInfo() {
   return (
-    <div style={{backgroundImage: "url(passenger-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
+    <div>
             
             <Head>
                 <title>Driver</title>
@@ -17,10 +17,10 @@ function Passenger() {
                 left: "50%",
                 transform: "translate(-50%, -50%)"
                 }}>
-                <PassengerPageComponent />
+                <DriverInfoPageComponent />
             </div>
         </div>
   )
 }
 
-export default Passenger
+export default DriverInfo
