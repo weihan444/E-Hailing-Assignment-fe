@@ -1,4 +1,4 @@
-import DriverInfoPageComponent from "../Component/DriverInfoPageComponent"
+import DriverInfoPageComponent from "../../Component/DriverInfoPageComponent"
 import Head from 'next/head'
 
 
@@ -8,7 +8,7 @@ function DriverInfo() {
             
             <Head>
                 <title>Driver</title>
-                <link rel="icon" href="/pupg-icon.ico" />
+                <link rel="icon" href="../pupg-icon.ico" />
             </Head>
 
             <div style={{
