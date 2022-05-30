@@ -1,7 +1,7 @@
 import DriverPageComponent from "../Component/DriverPageComponent"
 import Head from 'next/head'
 
-
+ 
 function Driver() {
     return (
         <div style={{backgroundImage: "url(driver-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
@@ -23,4 +23,4 @@ function Driver() {
     )
 }
 
-export default Driver
+export default Driver 
