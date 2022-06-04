@@ -3,6 +3,7 @@ import HomePage from '../Component/HomePage'
 
 export default function Home() {
     
+
     return (
         <div style={{backgroundImage: "url(home-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
             <Head>
