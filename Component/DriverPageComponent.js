@@ -1,104 +1,197 @@
-import TextField from '@mui/material/TextField';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Box from '@mui/material/Box';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Button } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Link from 'next/link';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
+import TextField from "@mui/material/TextField";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Box from "@mui/material/Box";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Button } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Link from "next/link";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#263238',
-        },
+  palette: {
+    primary: {
+      main: "#263238",
     },
+  },
 });
 
 function Space() {
-    return (
-        <Box
-            sx={{
-            height: 30,
-            backgroundColor: (theme) =>
-            theme.palette.mode === 'none'
-            }}
-        />
-    );
+  return (
+    <Box
+      sx={{
+        height: 30,
+        backgroundColor: (theme) => theme.palette.mode === "none",
+      }}
+    />
+  );
 }
-
 
 const DriverPageComponent = () => {
-    return (
-        <div>
-            <Box sx={{ 
-                backgroundColor: 'white',
-                opacity: [0.9, 0.8, 0.75],
-                borderRadius: "10px",
-                height: "400px",
-                width: "400px",
-                }} >
-                <div style={{position: 'absolute', top: "42%", left: "50%", transform: "translate(-50%, -50%)"}}>
-                    <form action='' method='put'>
-                        <ThemeProvider theme={theme} >
-                            <Space />
-                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <AccountCircleIcon sx={{mr: 1, my: 1}}/>
-                                <TextField variant="standard" label="Name" size='small'/>
-                            </Box>
-                            <Space />
-                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <DirectionsCarIcon sx={{mr:1, my: 1}}/>
-                                <FormControl fullWidth>
-                                    <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                        Capacity
-                                    </InputLabel>
-                                    <NativeSelect
-                                    defaultValue={30}
-                                    inputProps={{
-                                        name: 'age',
-                                        id: 'uncontrolled-native',
-                                    }}
-                                    >
-                                        <option value={1}>1</option>
-                                        <option value={2}>2</option>
-                                        <option value={3}>3</option>
-                                        <option value={4}>4</option>
-                                        <option value={5}>5</option>
-                                        <option value={6}>6</option>
-                                    </NativeSelect>
-                                </FormControl>
-                            </Box>
-                            <Space />
-                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                                <LocationOnIcon sx={{mr:1, my: 1}} />
-                                <Box>
-                                    <TextField variant="standard" label="Longitude" size='small'/>
-                                    <TextField variant="standard" label="Latitude" size='small'/>
-                                </Box>
-                            </Box>
-                            <Space />
-                            <Button sx={{float: 'right'}} type="submit" variant='contained'>Add</Button>
-                        </ThemeProvider>
-                    </form>
-                </div>
-            </Box>
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
-            <div style={{
-                color: "black", 
-                float: "right",
-                marginRight: "20px",
-                textShadow: "0 0 10px #ebd9ce, 0 0 20px #ebd9ce, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9"
-            }}>    
-                <Link href='/Driver/resign'>
-                    <a><b><u>To Resign . . .</u></b></a>
-                </Link>
-            </div> 
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          height: "calc(100vh - 80px)",
+          width: "calc(100vh - 80px)",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          margin: "15px",
+          position: "absolute",
+          left: "25%",
+          top: "50%",
+          transform: "translate(-50%,-50%)",
+        }}
+      >
+        <PrismaZoom
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+          }}
+          maxZoom="8"
+        >
+          <LocationOnIcon
+            sx={{
+              position: "absolute",
+              left: `${x}px`,
+              top: `${y}px`,
+              transform: "translate(-50%, -95%)",
+              color: "orange",
+            }}
+          />
+          <img
+            src="erangel.jpg"
+            alt="test"
+            height="100%"
+            onMouseDownCapture={(e) => {
+              setX(e.nativeEvent.offsetX);
+              setY(e.nativeEvent.offsetY);
+            }}
+          />
+        </PrismaZoom>
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "70%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "white",
+            opacity: [0.9, 0.8, 0.75],
+            borderRadius: "10px",
+            height: "400px",
+            width: "400px",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "42%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <form action="" method="put">
+              <ThemeProvider theme={theme}>
+                <Space />
+                <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+                  <AccountCircleIcon sx={{ mr: 1, my: 1 }} />
+                  <TextField variant="standard" label="Name" size="small" />
+                </Box>
+                <Space />
+                <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+                  <DirectionsCarIcon sx={{ mr: 1, my: 1 }} />
+                  <FormControl fullWidth>
+                    <InputLabel
+                      variant="standard"
+                      htmlFor="uncontrolled-native"
+                    >
+                      Capacity
+                    </InputLabel>
+                    <NativeSelect
+                      defaultValue={30}
+                      inputProps={{
+                        name: "age",
+                        id: "uncontrolled-native",
+                      }}
+                    >
+                      <option value={1}>1</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                      <option value={4}>4</option>
+                      <option value={5}>5</option>
+                      <option value={6}>6</option>
+                    </NativeSelect>
+                  </FormControl>
+                </Box>
+                <Space />
+                <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+                  <LocationOnIcon sx={{ mr: 1, my: 1 }} />
+                  <Box>
+                    <TextField
+                      variant="standard"
+                      label="Longitude"
+                      size="small"
+                      value={x}
+                    />
+                    <TextField
+                      variant="standard"
+                      label="Latitude"
+                      size="small"
+                      value={y}
+                    />
+                  </Box>
+                </Box>
+                <Space />
+                <Button
+                  sx={{ float: "right" }}
+                  type="submit"
+                  variant="contained"
+                >
+                  Add
+                </Button>
+              </ThemeProvider>
+            </form>
+          </div>
+        </Box>
+
+        <div
+          style={{
+            color: "black",
+            float: "right",
+            marginRight: "20px",
+            textShadow:
+              "0 0 10px #ebd9ce, 0 0 20px #ebd9ce, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9",
+          }}
+        >
+          <Link href="/Driver/resign">
+            <a>
+              <b>
+                <u>To Resign . . .</u>
+              </b>
+            </a>
+          </Link>
         </div>
-    )
-}
+      </div>
+    </>
+  );
+};
 
-export default DriverPageComponent
+export default DriverPageComponent;

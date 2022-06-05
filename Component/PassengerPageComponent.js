@@ -24,7 +24,6 @@ const theme = createTheme({
 });
 
 function Space() {
-
   return (
     <Box
       sx={{
@@ -36,7 +35,6 @@ function Space() {
 }
 
 const PassengerPageComponent = () => {
-
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const [endX, setEndX] = useState(0);
@@ -44,20 +42,20 @@ const PassengerPageComponent = () => {
   const [start, setStart] = useState(true);
 
   const clickStartHandler = () => {
-    setStart(true)
-  }
+    setStart(true);
+  };
 
   const clickEndHandler = () => {
-    setStart(false)
-  }
+    setStart(false);
+  };
 
   return (
     <>
       <div
         style={{
           display: "flex",
-          height: "calc(100vh - 130px)",
-          width: "calc(100vh - 130px)",
+          height: "calc(100vh - 80px)",
+          width: "calc(100vh - 80px)",
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
@@ -65,7 +63,7 @@ const PassengerPageComponent = () => {
           position: "absolute",
           left: "25%",
           top: "50%",
-          transform: "translate(-50%,-50%)"
+          transform: "translate(-50%,-50%)",
         }}
       >
         <PrismaZoom
@@ -74,21 +72,40 @@ const PassengerPageComponent = () => {
             width: "100%",
             height: "100%",
           }}
+          maxZoom="8"
         >
+          <LocationOnIcon
+            sx={{
+              position: "absolute",
+              left: `${startX}px`,
+              top: `${startY}px`,
+              transform: "translate(-50%, -95%)",
+              color: "powderblue",
+            }}
+          />
+          <LocationOnIcon
+            sx={{
+              position: "absolute",
+              left: `${endX}px`,
+              top: `${endY}px`,
+              transform: "translate(-50%, -95%)",
+              color: "greenyellow",
+            }}
+          />
           <img
             src="erangel.jpg"
             alt="test"
             height="100%"
             onMouseDownCapture={(e) => {
               if (start) {
-                  setStartX(e.nativeEvent.offsetX);
-                  setStartY(e.nativeEvent.offsetY);
+                setStartX(e.nativeEvent.offsetX);
+                setStartY(e.nativeEvent.offsetY);
               } else {
-                  setEndX(e.nativeEvent.offsetX);
-                  setEndY(e.nativeEvent.offsetY);
+                setEndX(e.nativeEvent.offsetX);
+                setEndY(e.nativeEvent.offsetY);
               }
             }}
-          ></img>
+          />
         </PrismaZoom>
       </div>
 
@@ -154,12 +171,12 @@ const PassengerPageComponent = () => {
                 </Box>
                 <Space />
                 <p style={{ margin: "0px" }}>
-                  <i>From ... ?</i>
+                  <i>
+                    <MyLocationIcon sx={{ mr: 0, my: 0, fontSize: "18px" }} />{" "}
+                    From ... ?
+                  </i>
                 </p>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                  <p>
-                    <MyLocationIcon sx={{ mr: 1, my: 1 }} />
-                  </p>
                   <Box>
                     <TextField
                       variant="standard"
@@ -173,10 +190,10 @@ const PassengerPageComponent = () => {
                       size="small"
                       value={startY}
                     />
-                    <Button 
-                      sx={{ 
+                    <Button
+                      sx={{
                         float: "right",
-                        marginTop: "5px" 
+                        marginTop: "5px",
                       }}
                       variant="contained"
                       onClick={clickStartHandler}
@@ -188,12 +205,12 @@ const PassengerPageComponent = () => {
                 </Box>
                 <Space />
                 <p style={{ margin: "0px" }}>
-                  <i>To ... ?</i>
+                  <i>
+                    <LocationOnIcon sx={{ mr: 0, my: 0, fontSize: "20px" }} />{" "}
+                    To ... ?
+                  </i>
                 </p>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                  <p>
-                    <LocationOnIcon sx={{ mr: 1, my: 1 }} />
-                  </p>
                   <Box>
                     <TextField
                       variant="standard"
@@ -207,10 +224,10 @@ const PassengerPageComponent = () => {
                       size="small"
                       value={endY}
                     />
-                    <Button 
-                      sx={{ 
+                    <Button
+                      sx={{
                         float: "right",
-                        marginTop: "5px" 
+                        marginTop: "5px",
                       }}
                       variant="contained"
                       onClick={clickEndHandler}
@@ -230,7 +247,7 @@ const PassengerPageComponent = () => {
                     Back
                   </Button>
                 </Link>
-                <Link href="/Passenger/DriverInfo">
+                <Link href="/Passenger/choose-driver">
                   <Button
                     sx={{ float: "right" }}
                     type="submit"
