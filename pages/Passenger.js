@@ -7,7 +7,7 @@ function Passenger() {
     <div style={{backgroundImage: "url(passenger-bg.jpg)", backgroundSize: "cover", height: "100vh"}}>
             
             <Head>
-                <title>Driver</title>
+                <title>Passenger</title>
                 <link rel="icon" href="/pupg-icon.ico" />
             </Head>
 

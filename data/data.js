@@ -1,65 +1,74 @@
 export const request = [
-    {
-        "id": "1",
-        "customer": "Ray",
-        "status": "reached",
-        "arrtime": "1450",
-        "capacity": "5",
-        "startpoint": "1,2",
-        "destination": "3,4"
-    },
-    {
-        "id": "2",
-        "customer": "John",
-        "status": "picked up",
-        "arrtime": "1730",
-        "capacity": "5",
-        "startpoint": "3,4",
-        "destination": "5,6"
-    },
-    {
-        "id": "3",
-        "customer": "Adam",
-        "status": "pending",
-        "arrtime": "1730",
-        "capacity": "4",
-        "startpoint": "5,6",
-        "destination": "7,8"
-    },
-    {
-        "id": "4",
-        "customer": "Kobe",
-        "status": "waiting",
-        "arrtime": "1840",
-        "capacity": "3",
-        "startpoint": "7,8",
-        "destination": "9,0"
-    }
-]
+  {
+    id: 1,
+    customer: "Ray",
+    status: "reached",
+    arrtime: "1450",
+    capacity: 5,
+    startlongitude: 150,
+    startlatitude: 150,
+    endlongitude: 350,
+    endlatitude: 350,
+  },
+  {
+    id: 2,
+    customer: "John",
+    status: "picked up",
+    arrtime: "1730",
+    capacity: 5,
+    startlongitude: 120,
+    startlatitude: 180,
+    endlongitude: 330,
+    endlatitude: 350,
+  },
+  {
+    id: 3,
+    customer: "Adam",
+    status: "pending",
+    arrtime: "1730",
+    capacity: 4,
+    startlongitude: 80,
+    startlatitude: 50,
+    endlongitude: 225,
+    endlatitude: 210,
+  },
+  {
+    id: 4,
+    customer: "Kobe",
+    status: "waiting",
+    arrtime: "1840",
+    capacity: 3,
+    startlongitude: 380,
+    startlatitude: 420,
+    endlongitude: 135,
+    endlatitude: 56,
+  },
+];
 
 export const drivers = [
-    {
-        "id": "1",
-        "driver": "Driver 1",
-        "status": "available",
-        "capacity": "5",
-        "location": "1,2",
-        "customer": "-"
-    },
-    {
-        "id": "2",
-        "driver": "Driver 2",
-        "status": "not available",
-        "capacity": "5",
-        "location": "3,4",
-        "customer": "John"
-    },
-    {
-        "id": "3",
-        "driver": "Driver 3",
-        "status": "available",
-        "capacity": "5",
-        "location": "5,6",
-        "customer": "-"
-    }
-]
+  {
+    id: 1,
+    driver: "Driver 1",
+    status: "available",
+    capacity: 5,
+    longitude: 100,
+    latitude: 100,
+  },
+  {
+    id: 2,
+    driver: "Driver 2",
+    status: "not available",
+    capacity: 5,
+    longitude: 200,
+    latitude: 200,
+    customer: "John",
+  },
+  {
+    id: 3,
+    driver: "Driver 3",
+    status: "available",
+    capacity: 7,
+    longitude: 300,
+    latitude: 300,
+  },
+];
