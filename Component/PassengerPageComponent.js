@@ -12,6 +12,8 @@ import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import { Alert } from "react-bootstrap";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -47,6 +49,16 @@ const PassengerPageComponent = () => {
 
   const clickEndHandler = () => {
     setStart(false);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (formData) => {
+    alert(JSON.stringify(formData));
   };
 
   return (
@@ -137,12 +149,31 @@ const PassengerPageComponent = () => {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <form action="" method="put">
+            <form
+              action="/Passenger/choose-driver"
+              method="put"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <ThemeProvider theme={theme}>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <PersonIcon sx={{ mr: 1, my: 1 }} />
-                  <TextField variant="standard" label="Name" size="small" />
+                  <TextField
+                    variant="standard"
+                    label="Name"
+                    size="small"
+                    autoComplete="off"
+                    {...register("name", { required: true })}
+                  />
                 </Box>
+                {errors.name && (
+                  <Alert variant="danger">
+                    {errors.name?.type === "required" && (
+                      <h6 style={{ color: "red", margin: "0px" }}>
+                        Name is required
+                      </h6>
+                    )}
+                  </Alert>
+                )}
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <DirectionsCarIcon sx={{ mr: 1, my: 1 }} />
@@ -239,23 +270,17 @@ const PassengerPageComponent = () => {
                 </Box>
                 <Space />
                 <Link href="/">
-                  <Button
-                    sx={{ float: "left" }}
-                    type="submit"
-                    variant="contained"
-                  >
+                  <Button sx={{ float: "left" }} variant="contained">
                     Back
                   </Button>
                 </Link>
-                <Link href="/Passenger/choose-driver">
-                  <Button
-                    sx={{ float: "right" }}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Next
-                  </Button>
-                </Link>
+                <Button
+                  sx={{ float: "right" }}
+                  type="submit"
+                  variant="contained"
+                >
+                  Next
+                </Button>
               </ThemeProvider>
             </form>
           </div>

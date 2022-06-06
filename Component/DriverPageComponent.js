@@ -10,6 +10,8 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Alert } from "react-bootstrap";
 import dynamic from "next/dynamic";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
@@ -36,6 +38,15 @@ function Space() {
 const DriverPageComponent = () => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (formData) => {
+    alert(JSON.stringify(formData));
+  };
 
   return (
     <>
@@ -108,13 +119,28 @@ const DriverPageComponent = () => {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <form action="" method="put">
+            <form action="" method="put" onSubmit={handleSubmit(onSubmit)}>
               <ThemeProvider theme={theme}>
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <AccountCircleIcon sx={{ mr: 1, my: 1 }} />
-                  <TextField variant="standard" label="Name" size="small" />
+                  <TextField
+                    variant="standard"
+                    label="Name"
+                    size="small"
+                    autoComplete="off"
+                    {...register("name", { required: true })}
+                  />
                 </Box>
+                {errors.name && (
+                  <Alert variant="danger">
+                    {errors.name?.type === "required" && (
+                      <h6 style={{ color: "red", margin: "0px" }}>
+                        Name is required
+                      </h6>
+                    )}
+                  </Alert>
+                )}
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <DirectionsCarIcon sx={{ mr: 1, my: 1 }} />
