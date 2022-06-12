@@ -14,6 +14,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
+import axios from "axios";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -58,7 +59,14 @@ const PassengerPageComponent = () => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    alert(JSON.stringify(formData));
+    const { ...all } = formData;
+    axios({
+      method: "post",
+      url: "http://localhost:8080/customers",
+      data: { ...all },
+    })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -149,11 +157,7 @@ const PassengerPageComponent = () => {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <form
-              action="/Passenger/choose-driver"
-              method="put"
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <ThemeProvider theme={theme}>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <PersonIcon sx={{ mr: 1, my: 1 }} />
@@ -185,11 +189,8 @@ const PassengerPageComponent = () => {
                       Capacity
                     </InputLabel>
                     <NativeSelect
-                      defaultValue={30}
-                      inputProps={{
-                        name: "age",
-                        id: "uncontrolled-native",
-                      }}
+                      defaultValue={1}
+                      {...register("capacity", { required: true })}
                     >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -214,12 +215,14 @@ const PassengerPageComponent = () => {
                       label="Longitude"
                       size="small"
                       value={startX}
+                      {...register("longitude", { required: true })}
                     />
                     <TextField
                       variant="standard"
                       label="Latitude"
                       size="small"
                       value={startY}
+                      {...register("latitude", { required: true })}
                     />
                     <Button
                       sx={{
@@ -248,12 +251,14 @@ const PassengerPageComponent = () => {
                       label="Longitude"
                       size="small"
                       value={endX}
+                      {...register("dest_longitude", { required: true })}
                     />
                     <TextField
                       variant="standard"
                       label="Latitude"
                       size="small"
                       value={endY}
+                      {...register("dest_latitude", { required: true })}
                     />
                     <Button
                       sx={{
