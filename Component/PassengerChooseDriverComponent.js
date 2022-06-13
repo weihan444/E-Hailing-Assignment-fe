@@ -17,19 +17,11 @@ const columns = [
   { field: "latitude", headerName: "Latitude", sortable: false, width: 140 },
 ];
 
-function CustomFooterStatusComponent() {
-  return (
-    <div>
-      <Link href="/Passenger">
-        <Button>Confirm</Button>
-      </Link>
-    </div>
-  );
-}
-
 const ChooseDriver = (props) => {
   const [select, setSelection] = useState(-1);
   const [drivers, setDrivers] = useState([]);
+  const [x, setX] = useState(null);
+  const [y, setY] = useState(null);
   const {
     id,
     name,
@@ -52,6 +44,33 @@ const ChooseDriver = (props) => {
       }
     });
   }, []);
+
+  function CustomFooterStatusComponent() {
+    return (
+      <div>
+        <Button
+          onClick={() => {
+            axios({
+              method: "post",
+              url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
+            }).then(() => {
+              setInterval(() => {
+                axios({
+                  method: "get",
+                  url: `http://localhost:8080/drivers/${drivers[select]?.id}`,
+                }).then((response) => {
+                  setX(response.data.longitude);
+                  setY(response.data.latitude);
+                });
+              }, 1000);
+            });
+          }}
+        >
+          Confirm
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -86,10 +105,28 @@ const ChooseDriver = (props) => {
           <LocationOnIcon
             sx={{
               position: "absolute",
-              left: `${drivers[select]?.longitude}px`,
-              top: `${drivers[select]?.latitude}px`,
+              left: `${x}px`,
+              top: `${y}px`,
               transform: "translate(-50%, -95%)",
               color: "red",
+            }}
+          />
+          <LocationOnIcon
+            sx={{
+              position: "absolute",
+              left: `${longitude}px`,
+              top: `${latitude}px`,
+              transform: "translate(-50%, -95%)",
+              color: "green",
+            }}
+          />
+          <LocationOnIcon
+            sx={{
+              position: "absolute",
+              left: `${dest_longitude}px`,
+              top: `${dest_latitude}px`,
+              transform: "translate(-50%, -95%)",
+              color: "yellow",
             }}
           />
           <img src="../erangel.jpg" alt="test" height="100%" />
@@ -125,9 +162,11 @@ const ChooseDriver = (props) => {
           onSelectionModelChange={(ids) => {
             const selectedID = ids[0];
             if (drivers) {
-              drivers.forEach((row, idx) => {
-                if (row.id === selectedID) {
+              drivers.forEach((driver, idx) => {
+                if (driver.id === selectedID) {
                   setSelection(idx);
+                  setX(driver.longitude);
+                  setY(driver.latitude);
                 }
               });
             }
