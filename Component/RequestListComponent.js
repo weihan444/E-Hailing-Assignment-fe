@@ -1,32 +1,32 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { request } from "../data/data";
 import Head from "next/head";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import axios from "axios";
 
 const columns = [
-  { field: "customer", headerName: "Customer", sortable: false, width: 300 },
+  { field: "name", headerName: "Customer", sortable: false, width: 300 },
   { field: "status", headerName: "status", width: 130 },
   { field: "capacity", headerName: "Capacity", width: 110 },
-  { field: "arrtime", headerName: "Arrival Time", width: 130 },
+  { field: "expected_arrival_time", headerName: "Arrival Time", width: 130 },
   {
-    field: "startlongitude",
+    field: "longitude",
     headerName: "Location",
     sortable: false,
     width: 110,
   },
-  { field: "startlatitude", headerName: "", sortable: false, width: 110 },
+  { field: "latitude", headerName: "", sortable: false, width: 110 },
   {
-    field: "endlongitude",
+    field: "dest_longitude",
     headerName: "Destination",
     sortable: false,
     width: 110,
   },
-  { field: "endlatitude", headerName: "", sortable: false, width: 110 },
+  { field: "dest_latitude", headerName: "", sortable: false, width: 110 },
 ];
 
 function CustomFooterStatusComponent(props) {
@@ -47,11 +47,19 @@ function CustomFooterStatusComponent(props) {
   );
 }
 
-const requestList = () => {
+const RequestList = () => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    setTableData(request);
+    axios({
+      method: "get",
+      url: "http://localhost:8080/customers",
+    })
+      .then((response) => {
+        console.log(response);
+        setTableData(response.data);
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   return (
@@ -87,4 +95,4 @@ const requestList = () => {
   );
 };
 
-export default requestList;
+export default RequestList;

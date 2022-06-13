@@ -1,20 +1,33 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { drivers } from "../data/data";
 import Head from "next/head";
 import Link from "next/link";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
 
 const columns = [
-  { field: "driver", headerName: "Driver", sortable: false, width: 300 },
+  { field: "name", headerName: "Driver", sortable: false, width: 300 },
   { field: "status", headerName: "Status", width: 130 },
   { field: "capacity", headerName: "Capacity", width: 110 },
   { field: "longitude", headerName: "Location", sortable: false, width: 130 },
   { field: "latitude", headerName: "", sortable: false, width: 130 },
-  { field: "customer", headerName: "Customer", sortable: false, width: 300 },
+  {
+    field: "customer",
+    headerName: "Customer",
+    sortable: false,
+    width: 300,
+    valueGetter: (params) => {
+      console.log(params);
+      let name = "";
+      if (params.value.name) {
+        name = params.value.name;
+      }
+      return name;
+    },
+  },
 ];
 
 function CustomFooterStatusComponent(props) {
@@ -35,7 +48,21 @@ function CustomFooterStatusComponent(props) {
   );
 }
 
-const driverList = () => {
+const DriverList = () => {
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://localhost:8080/drivers",
+    })
+      .then((response) => {
+        console.log(response);
+        setTableData(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
     <div>
       <Head>
@@ -56,7 +83,7 @@ const driverList = () => {
 
       <div style={{ height: "80vh", width: "100%" }}>
         <DataGrid
-          rows={drivers}
+          rows={tableData}
           columns={columns}
           checkboxSelection
           disableColumnMenu
@@ -69,4 +96,4 @@ const driverList = () => {
   );
 };
 
-export default driverList;
+export default DriverList;

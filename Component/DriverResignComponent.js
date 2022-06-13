@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
+import axios from "axios";
 
 const theme = createTheme({
   palette: {
@@ -33,7 +34,22 @@ function toResign() {
   } = useForm();
 
   const onSubmit = (formData) => {
-    alert(JSON.stringify(formData));
+    console.log(formData);
+    const { name } = formData;
+    axios({
+      method: "get",
+      url: `http://localhost:8080/drivers?name=${name}`,
+    })
+      .then((response) => {
+        const { data } = response;
+        if (data && data.length > 0) {
+          axios({
+            method: "delete",
+            url: `http://localhost:8080/drivers/${data[0].id}`,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -66,11 +82,7 @@ function toResign() {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <form
-            action="/Driver"
-            method="DELETE"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form onSubmit={handleSubmit(onSubmit)}>
             <ThemeProvider theme={theme}>
               <Space />
               <Box sx={{ display: "flex", alignItems: "flex-end" }}>
@@ -93,15 +105,7 @@ function toResign() {
                 </Alert>
               )}
               <Space />
-              <Button
-                sx={{ float: "right" }}
-                type="submit"
-                variant="contained"
-                onClick={(e) => {
-                  if (window.confirm("Are you sure you wish to resign?"))
-                    this.onCancel(e);
-                }}
-              >
+              <Button sx={{ float: "right" }} type="submit" variant="contained">
                 Confirm
               </Button>
             </ThemeProvider>

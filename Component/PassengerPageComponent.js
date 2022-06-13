@@ -60,6 +60,7 @@ const PassengerPageComponent = () => {
 
   const onSubmit = (formData) => {
     const { ...all } = formData;
+    console.log(formData);
     axios({
       method: "post",
       url: "http://localhost:8080/customers",

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import dynamic from "next/dynamic";
+import axios from "axios";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -45,7 +46,15 @@ const DriverPageComponent = () => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    alert(JSON.stringify(formData));
+    console.log(formData);
+    const { ...all } = formData;
+    axios({
+      method: "post",
+      url: "http://localhost:8080/drivers",
+      data: { ...all },
+    })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -119,7 +128,7 @@ const DriverPageComponent = () => {
               transform: "translate(-50%, -50%)",
             }}
           >
-            <form action="" method="put" onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <ThemeProvider theme={theme}>
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
@@ -152,11 +161,8 @@ const DriverPageComponent = () => {
                       Capacity
                     </InputLabel>
                     <NativeSelect
-                      defaultValue={30}
-                      inputProps={{
-                        name: "age",
-                        id: "uncontrolled-native",
-                      }}
+                      defaultValue={1}
+                      {...register("capacity", { required: true })}
                     >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -176,12 +182,14 @@ const DriverPageComponent = () => {
                       label="Longitude"
                       size="small"
                       value={x}
+                      {...register("longitude", { required: true })}
                     />
                     <TextField
                       variant="standard"
                       label="Latitude"
                       size="small"
                       value={y}
+                      {...register("latitude", { required: true })}
                     />
                   </Box>
                 </Box>
