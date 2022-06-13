@@ -30,26 +30,39 @@ const columns = [
   },
 ];
 
-function CustomFooterStatusComponent(props) {
-  return (
-    <div>
-      <Link href="/Admin">
-        <IconButton aria-label="back">
-          <KeyboardBackspaceIcon />
-        </IconButton>
-      </Link>
-      <IconButton aria-label="delete">
-        <DeleteIcon />
-      </IconButton>
-      <IconButton aria-label="edit">
-        <EditIcon />
-      </IconButton>
-    </div>
-  );
-}
-
 const DriverList = () => {
   const [tableData, setTableData] = useState([]);
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  function CustomFooterStatusComponent(props) {
+    return (
+      <div>
+        <Link href="/Admin">
+          <IconButton aria-label="back">
+            <KeyboardBackspaceIcon />
+          </IconButton>
+        </Link>
+        <IconButton
+          onClick={() => {
+            const selectedIDs = new Set(selectionModel);
+            selectedIDs.forEach((id) => {
+              axios({
+                method: "delete",
+                url: `http://localhost:8080/drivers/${id}`,
+              });
+            });
+            setTableData((r) => r.filter((x) => !selectedIDs.has(x.id)));
+          }}
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+        <IconButton aria-label="edit">
+          <EditIcon />
+        </IconButton>
+      </div>
+    );
+  }
 
   useEffect(() => {
     axios({
@@ -86,9 +99,11 @@ const DriverList = () => {
           rows={tableData}
           columns={columns}
           checkboxSelection
-          disableColumnMenu
           components={{
             Footer: CustomFooterStatusComponent,
+          }}
+          onSelectionModelChange={(ids) => {
+            setSelectionModel(ids);
           }}
         />
       </div>

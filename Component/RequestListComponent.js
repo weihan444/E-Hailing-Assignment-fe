@@ -29,26 +29,39 @@ const columns = [
   { field: "dest_latitude", headerName: "", sortable: false, width: 110 },
 ];
 
-function CustomFooterStatusComponent(props) {
-  return (
-    <div>
-      <Link href="/Admin">
-        <IconButton aria-label="back">
-          <KeyboardBackspaceIcon />
-        </IconButton>
-      </Link>
-      <IconButton aria-label="delete">
-        <DeleteIcon />
-      </IconButton>
-      <IconButton aria-label="edit">
-        <EditIcon />
-      </IconButton>
-    </div>
-  );
-}
-
 const RequestList = () => {
   const [tableData, setTableData] = useState([]);
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  function CustomFooterStatusComponent(props) {
+    return (
+      <div>
+        <Link href="/Admin">
+          <IconButton aria-label="back">
+            <KeyboardBackspaceIcon />
+          </IconButton>
+        </Link>
+        <IconButton
+          onClick={() => {
+            const selectedIDs = new Set(selectionModel);
+            selectedIDs.forEach((id) => {
+              axios({
+                method: "delete",
+                url: `http://localhost:8080/customers/${id}`,
+              });
+            });
+            setTableData((r) => r.filter((x) => !selectedIDs.has(x.id)));
+          }}
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+        <IconButton aria-label="edit">
+          <EditIcon />
+        </IconButton>
+      </div>
+    );
+  }
 
   useEffect(() => {
     axios({
@@ -88,6 +101,9 @@ const RequestList = () => {
           disableColumnMenu
           components={{
             Footer: CustomFooterStatusComponent,
+          }}
+          onSelectionModelChange={(ids) => {
+            setSelectionModel(ids);
           }}
         />
       </div>
