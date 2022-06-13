@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -43,6 +44,7 @@ const PassengerPageComponent = () => {
   const [endX, setEndX] = useState(0);
   const [endY, setEndY] = useState(0);
   const [start, setStart] = useState(true);
+  const router = useRouter();
 
   const clickStartHandler = () => {
     setStart(true);
@@ -59,14 +61,27 @@ const PassengerPageComponent = () => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    const { ...all } = formData;
-    console.log(formData);
+    const { name, capacity } = formData;
     axios({
       method: "post",
       url: "http://localhost:8080/customers",
-      data: { ...all },
+      data: {
+        name,
+        capacity,
+        longitude: startX,
+        latitude: startY,
+        dest_longitude: endX,
+        dest_latitude: endY,
+      },
     })
-      .then((response) => console.log(response))
+      .then((response) => {
+        console.log(response);
+        const { data } = response;
+        router.push({
+          pathname: "/Passenger/choose-driver",
+          query: data,
+        });
+      })
       .catch((error) => console.log(error));
   };
 

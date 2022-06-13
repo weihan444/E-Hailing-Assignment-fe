@@ -47,11 +47,11 @@ const DriverPageComponent = () => {
 
   const onSubmit = (formData) => {
     console.log(formData);
-    const { ...all } = formData;
+    const { name, capacity } = formData;
     axios({
       method: "post",
       url: "http://localhost:8080/drivers",
-      data: { ...all },
+      data: { name, capacity, longitude: x, latitude: y },
     })
       .then((response) => console.log(response))
       .catch((error) => console.log(error));

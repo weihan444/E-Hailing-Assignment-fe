@@ -1,16 +1,17 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { drivers } from "../data/data";
 import Head from "next/head";
 import { Button } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { withRouter } from "next/router";
+import axios from "axios";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
 const columns = [
-  { field: "driver", headerName: "Driver", sortable: false, width: 150 },
+  { field: "name", headerName: "Driver", sortable: false, width: 150 },
   { field: "capacity", headerName: "Capacity", width: 90 },
   { field: "longitude", headerName: "Longitude", sortable: false, width: 140 },
   { field: "latitude", headerName: "Latitude", sortable: false, width: 140 },
@@ -19,15 +20,38 @@ const columns = [
 function CustomFooterStatusComponent() {
   return (
     <div>
-      <Link href="//Passenger">
+      <Link href="/Passenger">
         <Button>Confirm</Button>
       </Link>
     </div>
   );
 }
 
-const chooseDriver = () => {
-  const [select, setSelection] = useState(0);
+const ChooseDriver = (props) => {
+  const [select, setSelection] = useState(-1);
+  const [drivers, setDrivers] = useState([]);
+  const {
+    id,
+    name,
+    status,
+    expected_arrival_time,
+    capacity,
+    longitude,
+    latitude,
+    dest_longitude,
+    dest_latitude,
+  } = props.router.query;
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: "http://localhost:8080/drivers/status/available",
+    }).then((response) => {
+      if (response.data) {
+        setDrivers(response.data);
+      }
+    });
+  }, []);
 
   return (
     <div>
@@ -62,8 +86,8 @@ const chooseDriver = () => {
           <LocationOnIcon
             sx={{
               position: "absolute",
-              left: `${drivers[select].longitude}px`,
-              top: `${drivers[select].latitude}px`,
+              left: `${drivers[select]?.longitude}px`,
+              top: `${drivers[select]?.latitude}px`,
               transform: "translate(-50%, -95%)",
               color: "red",
             }}
@@ -98,8 +122,15 @@ const chooseDriver = () => {
           components={{
             Footer: CustomFooterStatusComponent,
           }}
-          onSelectionModelChange={(newSelection) => {
-            setSelection(newSelection - 1);
+          onSelectionModelChange={(ids) => {
+            const selectedID = ids[0];
+            if (drivers) {
+              drivers.forEach((row, idx) => {
+                if (row.id === selectedID) {
+                  setSelection(idx);
+                }
+              });
+            }
           }}
         />
       </div>
@@ -107,4 +138,4 @@ const chooseDriver = () => {
   );
 };
 
-export default chooseDriver;
+export default withRouter(ChooseDriver);

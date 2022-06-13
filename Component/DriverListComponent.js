@@ -34,7 +34,7 @@ const DriverList = () => {
   const [tableData, setTableData] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
 
-  function CustomFooterStatusComponent(props) {
+  function CustomFooterStatusComponent() {
     return (
       <div>
         <Link href="/Admin">
