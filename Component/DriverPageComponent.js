@@ -77,8 +77,8 @@ const DriverPageComponent = () => {
         <PrismaZoom
           style={{
             display: "block",
-            width: "100%",
-            height: "100%",
+            width: "674px",
+            height: "674px",
           }}
           maxZoom="8"
         >
@@ -89,6 +89,7 @@ const DriverPageComponent = () => {
               top: `${y}px`,
               transform: "translate(-50%, -95%)",
               color: "orange",
+              pointerEvents: "none",
             }}
           />
           <img

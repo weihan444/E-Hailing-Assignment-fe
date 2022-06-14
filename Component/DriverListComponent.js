@@ -22,7 +22,7 @@ const columns = [
     valueGetter: (params) => {
       console.log(params);
       let name = "";
-      if (params.value.name) {
+      if (params.value?.name) {
         name = params.value.name;
       }
       return name;

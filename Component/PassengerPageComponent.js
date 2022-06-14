@@ -39,10 +39,10 @@ function Space() {
 }
 
 const PassengerPageComponent = () => {
-  const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
-  const [endX, setEndX] = useState(0);
-  const [endY, setEndY] = useState(0);
+  const [startX, setStartX] = useState(337);
+  const [startY, setStartY] = useState(337);
+  const [endX, setEndX] = useState(337);
+  const [endY, setEndY] = useState(337);
   const [start, setStart] = useState(true);
   const router = useRouter();
 
@@ -105,8 +105,8 @@ const PassengerPageComponent = () => {
         <PrismaZoom
           style={{
             display: "block",
-            width: "100%",
-            height: "100%",
+            width: "674px",
+            height: "674px",
           }}
           maxZoom="8"
         >
@@ -117,6 +117,7 @@ const PassengerPageComponent = () => {
               top: `${startY}px`,
               transform: "translate(-50%, -95%)",
               color: "powderblue",
+              pointerEvents: "none",
             }}
           />
           <LocationOnIcon
@@ -126,6 +127,7 @@ const PassengerPageComponent = () => {
               top: `${endY}px`,
               transform: "translate(-50%, -95%)",
               color: "greenyellow",
+              pointerEvents: "none",
             }}
           />
           <img

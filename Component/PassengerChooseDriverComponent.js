@@ -97,8 +97,8 @@ const ChooseDriver = (props) => {
         <PrismaZoom
           style={{
             display: "block",
-            width: "100%",
-            height: "100%",
+            width: "674px",
+            height: "674px",
           }}
           maxZoom="8"
         >
@@ -117,7 +117,7 @@ const ChooseDriver = (props) => {
               left: `${longitude}px`,
               top: `${latitude}px`,
               transform: "translate(-50%, -95%)",
-              color: "green",
+              color: "powderblue",
             }}
           />
           <LocationOnIcon
@@ -126,7 +126,7 @@ const ChooseDriver = (props) => {
               left: `${dest_longitude}px`,
               top: `${dest_latitude}px`,
               transform: "translate(-50%, -95%)",
-              color: "yellow",
+              color: "greenyellow",
             }}
           />
           <img src="../erangel.jpg" alt="test" height="100%" />
