@@ -37,8 +37,8 @@ function Space() {
 }
 
 const DriverPageComponent = () => {
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+  const [x, setX] = useState(337);
+  const [y, setY] = useState(337);
   const {
     register,
     handleSubmit,

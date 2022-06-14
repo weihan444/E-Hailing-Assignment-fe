@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Clock from "react-live-clock";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -61,13 +62,22 @@ const PassengerPageComponent = () => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    const { name, capacity } = formData;
+    const { name, capacity, time } = formData;
+    const expected_time = new Date();
+    expected_time.setTime(expected_time.getTime() + time * 1000);
+    console.log(expected_time);
+    const hours = expected_time.getHours();
+    const minutes = expected_time.getMinutes();
+    const seconds = expected_time.getSeconds();
     axios({
       method: "post",
       url: "http://localhost:8080/customers",
       data: {
         name,
         capacity,
+        expected_arrival_time: `${hours < 10 ? "0" + hours : hours}:${
+          minutes < 10 ? "0" + minutes : minutes
+        }:${seconds < 10 ? "0" + seconds : seconds}`,
         longitude: startX,
         latitude: startY,
         dest_longitude: endX,
@@ -87,6 +97,19 @@ const PassengerPageComponent = () => {
 
   return (
     <>
+      <Clock
+        format="HH:mm:ss"
+        ticking={true}
+        style={{
+          position: "fixed",
+          top: "0px",
+          right: "0px",
+          backgroundColor: "white",
+          borderRadius: "5px 5px 5px 5px",
+          fontSize: "2vw",
+          padding: "5px",
+        }}
+      />
       <div
         style={{
           display: "flex",
@@ -159,7 +182,7 @@ const PassengerPageComponent = () => {
             backgroundColor: "white",
             opacity: 0.95,
             borderRadius: "10px",
-            height: "565px",
+            height: "660px",
             width: "400px",
             position: "absolute",
             left: "70%",
@@ -220,9 +243,21 @@ const PassengerPageComponent = () => {
                   </FormControl>
                 </Box>
                 <Space />
+                <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+                  <PersonIcon sx={{ mr: 1, my: 1 }} />
+                  <TextField
+                    variant="standard"
+                    label="Expected Time (Minutes)"
+                    size="small"
+                    autoComplete="off"
+                    defaultValue={0}
+                    {...register("time", { required: true })}
+                  />
+                </Box>
+                <Space />
                 <p style={{ margin: "0px" }}>
                   <i>
-                    <MyLocationIcon sx={{ mr: 0, my: 0, fontSize: "18px" }} />{" "}
+                    <MyLocationIcon sx={{ mr: 0, my: 0, fontSize: "18px" }} />
                     From ... ?
                   </i>
                 </p>

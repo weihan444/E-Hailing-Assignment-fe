@@ -15,13 +15,20 @@ const columns = [
   { field: "capacity", headerName: "Capacity", width: 90 },
   { field: "longitude", headerName: "Longitude", sortable: false, width: 140 },
   { field: "latitude", headerName: "Latitude", sortable: false, width: 140 },
+  {
+    field: "time",
+    headerName: "Expected Arrival Time",
+    sortable: true,
+    width: 300,
+  },
 ];
 
 const ChooseDriver = (props) => {
   const [select, setSelection] = useState(-1);
   const [drivers, setDrivers] = useState([]);
-  const [x, setX] = useState(null);
-  const [y, setY] = useState(null);
+  const [x, setX] = useState(-999);
+  const [y, setY] = useState(-999);
+  const [click, setClick] = useState(false);
   const {
     id,
     name,
@@ -39,8 +46,42 @@ const ChooseDriver = (props) => {
       method: "get",
       url: "http://localhost:8080/drivers/status/available",
     }).then((response) => {
+      const hms = expected_arrival_time.split(":");
+      let hours = Number(hms[0]);
+      let minutes = Number(hms[1]);
+      let seconds = Number(hms[2]);
+
       if (response.data) {
-        setDrivers(response.data);
+        const data = response.data;
+        data.forEach((row) => {
+          axios({
+            method: "post",
+            url: "http://localhost:8080/distance",
+            data: { driverId: row.id, customerId: id },
+          }).then((res) => {
+            let total = res.data;
+            hours = hours + res.data / 3600;
+            total = total % 3600;
+            minutes = minutes + res.data / 60;
+            total = total % 60;
+            seconds = seconds + total;
+            if (seconds >= 60) {
+              seconds = seconds % 60;
+              minutes = minutes + 1;
+            }
+            if (minutes >= 60) {
+              minutes = minutes % 60;
+              hours = hours + 1;
+            }
+            hours = Math.floor(hours);
+            minutes = Math.floor(minutes);
+            seconds = Math.floor(seconds);
+            row.time = `${hours < 10 ? "0" + hours : hours}:${
+              minutes < 10 ? "0" + minutes : minutes
+            }:${seconds < 10 ? "0" + seconds : seconds}`;
+            setDrivers(response.data);
+          });
+        });
       }
     });
   }, []);
@@ -71,6 +112,53 @@ const ChooseDriver = (props) => {
       </div>
     );
   }
+
+  function ChooseDriver() {
+    return (
+      <div
+        style={{
+          height: "60vh",
+          width: "40%",
+          position: "absolute",
+          top: "50%",
+          left: "75%",
+          transform: "translate(-50%,-65%)",
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "cursive",
+            textAlign: "center",
+            fontStyle: "oblique",
+            fontSize: "30px",
+          }}
+        >
+          Choose Your Driver
+        </h1>
+        <DataGrid
+          rows={drivers}
+          columns={columns}
+          components={{
+            Footer: CustomFooterStatusComponent,
+          }}
+          onSelectionModelChange={(ids) => {
+            const selectedID = ids[0];
+            if (drivers) {
+              drivers.forEach((driver, idx) => {
+                if (driver.id === selectedID) {
+                  setSelection(idx);
+                  setX(driver.longitude);
+                  setY(driver.latitude);
+                }
+              });
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  function ViewStatus() {}
 
   return (
     <div>
@@ -132,47 +220,7 @@ const ChooseDriver = (props) => {
           <img src="../erangel.jpg" alt="test" height="100%" />
         </PrismaZoom>
       </div>
-
-      <div
-        style={{
-          height: "60vh",
-          width: "40%",
-          position: "absolute",
-          top: "50%",
-          left: "75%",
-          transform: "translate(-50%,-65%)",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "cursive",
-            textAlign: "center",
-            fontStyle: "oblique",
-            fontSize: "30px",
-          }}
-        >
-          Choose Your Driver
-        </h1>
-        <DataGrid
-          rows={drivers}
-          columns={columns}
-          components={{
-            Footer: CustomFooterStatusComponent,
-          }}
-          onSelectionModelChange={(ids) => {
-            const selectedID = ids[0];
-            if (drivers) {
-              drivers.forEach((driver, idx) => {
-                if (driver.id === selectedID) {
-                  setSelection(idx);
-                  setX(driver.longitude);
-                  setY(driver.latitude);
-                }
-              });
-            }
-          }}
-        />
-      </div>
+      {click ? <ViewStatus /> : <ChooseDriver />}
     </div>
   );
 };
