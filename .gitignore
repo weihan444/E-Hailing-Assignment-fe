@@ -30,3 +30,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# test.js file for testing
+test.js

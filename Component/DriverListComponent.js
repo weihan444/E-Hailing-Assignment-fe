@@ -29,6 +29,19 @@ const columns = [
       return name;
     },
   },
+  {
+    field: "rating",
+    headerName: "Rating",
+    sortable: false,
+    width: 140,
+    valueGetter: (params) => {
+      if (params.row.rating !== 0 && params.row.rating !== 0) {
+        const rating = params.row.rating / params.row.ratingCount;
+        return rating.toFixed(1);
+      }
+      return "0.0";
+    },
+  },
 ];
 
 const DriverList = () => {

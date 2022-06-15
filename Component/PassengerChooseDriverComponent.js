@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid";
 import Head from "next/head";
-import { Button } from "@mui/material";
+import { Button, Rating, Typography } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
@@ -22,6 +22,19 @@ const columns = [
     sortable: true,
     width: 140,
   },
+  {
+    field: "rating",
+    headerName: "Rating",
+    sortable: false,
+    width: 140,
+    valueGetter: (params) => {
+      if (params.row.rating !== 0 && params.row.rating !== 0) {
+        const rating = params.row.rating / params.row.ratingCount;
+        return rating.toFixed(1);
+      }
+      return "0.0";
+    },
+  },
 ];
 
 let clicked = false;
@@ -36,6 +49,8 @@ const ChooseDriver = (props) => {
   const [custStatus, setCustStatus] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [reached, setReached] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [disableButton, setDisableButton] = useState(false);
   const {
     id,
     name,
@@ -227,6 +242,8 @@ const ChooseDriver = (props) => {
           top: "50%",
           left: "75%",
           transform: "translate(-50%,-65%)",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <h1>Driver Information</h1>
@@ -237,11 +254,39 @@ const ChooseDriver = (props) => {
         <h3>Current Status: {custStatus}</h3>
         <h3>Last Update: {lastUpdate}</h3>
         {reached ? (
-          <Link href="/">
-            <Button sx={{ float: "left", margin: "10px" }} variant="contained">
-              Back
+          <>
+            <Typography component="legend">Rate Driver</Typography>
+            <Rating
+              name="Driver Rating"
+              value={rating}
+              onChange={(event, newRating) => {
+                setRating(newRating);
+              }}
+            />
+            <Button
+              sx={{ float: "left", margin: "10px", width: "30%" }}
+              variant="contained"
+              disabled={disableButton}
+              onClick={() => {
+                setDisableButton(true);
+                axios({
+                  method: "put",
+                  url: `http://localhost:8080/drivers/${selectedDriver.id}/rate`,
+                  data: { rating: rating },
+                });
+              }}
+            >
+              Submit Review
             </Button>
-          </Link>
+            <Link href="/">
+              <Button
+                sx={{ float: "left", margin: "10px" }}
+                variant="contained"
+              >
+                Back
+              </Button>
+            </Link>
+          </>
         ) : null}
       </div>
     );
