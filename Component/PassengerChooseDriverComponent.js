@@ -183,11 +183,10 @@ const ChooseDriver = (props) => {
           transform: "translate(-50%,-65%)",
         }}
       >
-        <h2>Status:</h2>
-        <h3>Driver Location:</h3>
+        <h3>Driver Location -</h3>
         <h3>Longitude: {x}</h3>
         <h3>Latitude: {y}</h3>
-        <h3>Status: {custStatus}</h3>
+        <h3>Driver Status: {custStatus}</h3>
       </div>
     );
   }
