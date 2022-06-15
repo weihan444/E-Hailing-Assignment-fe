@@ -4,8 +4,8 @@ import { Button } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { withRouter } from "next/router";
+import Clock from "react-live-clock";
 import axios from "axios";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
@@ -19,9 +19,12 @@ const columns = [
     field: "time",
     headerName: "Expected Arrival Time",
     sortable: true,
-    width: 300,
+    width: 140,
   },
 ];
+
+let clicked = false;
+let selectedDriver = null;
 
 const ChooseDriver = (props) => {
   const [select, setSelection] = useState(-1);
@@ -41,50 +44,61 @@ const ChooseDriver = (props) => {
     dest_latitude,
   } = props.router.query;
 
+  selectedDriver = drivers[select];
+
   useEffect(() => {
+    getData();
+  }, []);
+
+  function getData() {
     axios({
       method: "get",
       url: "http://localhost:8080/drivers/status/available",
     }).then((response) => {
-      const hms = expected_arrival_time.split(":");
-      let hours = Number(hms[0]);
-      let minutes = Number(hms[1]);
-      let seconds = Number(hms[2]);
+      const expected_time = new Date();
 
       if (response.data) {
         const data = response.data;
+        const promises = [];
         data.forEach((row) => {
-          axios({
-            method: "post",
-            url: "http://localhost:8080/distance",
-            data: { driverId: row.id, customerId: id },
-          }).then((res) => {
-            let total = res.data;
-            hours = hours + res.data / 3600;
-            total = total % 3600;
-            minutes = minutes + res.data / 60;
-            total = total % 60;
-            seconds = seconds + total;
-            if (seconds >= 60) {
-              seconds = seconds % 60;
-              minutes = minutes + 1;
-            }
-            if (minutes >= 60) {
-              minutes = minutes % 60;
-              hours = hours + 1;
-            }
-            hours = Math.floor(hours);
-            minutes = Math.floor(minutes);
-            seconds = Math.floor(seconds);
-            row.time = `${hours < 10 ? "0" + hours : hours}:${
+          promises.push(
+            axios({
+              method: "post",
+              url: "http://localhost:8080/distance",
+              data: { driverId: row.id, customerId: id },
+            })
+          );
+        });
+        Promise.all(promises).then((array) => {
+          array.forEach((res, idx) => {
+            const total = res.data;
+            expected_time.setTime(expected_time.getTime() + total * 1000);
+            const hours = expected_time.getHours();
+            const minutes = expected_time.getMinutes();
+            const seconds = expected_time.getSeconds();
+            data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
               minutes < 10 ? "0" + minutes : minutes
             }:${seconds < 10 ? "0" + seconds : seconds}`;
-            setDrivers(response.data);
+            setDrivers(
+              response.data.filter(
+                (r) => r.capacity >= capacity && expected_arrival_time >= r.time
+              )
+            );
           });
         });
       }
     });
-  }, []);
+  }
+
+  function getLocation() {
+    axios({
+      method: "get",
+      url: `http://localhost:8080/drivers/${selectedDriver?.id}`,
+    }).then((response) => {
+      setX(response.data.longitude);
+      setY(response.data.latitude);
+    });
+  }
 
   function CustomFooterStatusComponent() {
     return (
@@ -95,15 +109,8 @@ const ChooseDriver = (props) => {
               method: "post",
               url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
             }).then(() => {
-              setInterval(() => {
-                axios({
-                  method: "get",
-                  url: `http://localhost:8080/drivers/${drivers[select]?.id}`,
-                }).then((response) => {
-                  setX(response.data.longitude);
-                  setY(response.data.latitude);
-                });
-              }, 1000);
+              setClick(true);
+              clicked = true;
             });
           }}
         >
@@ -112,8 +119,7 @@ const ChooseDriver = (props) => {
       </div>
     );
   }
-
-  function ChooseDriver() {
+  function ChooseDriverComponent() {
     return (
       <div
         style={{
@@ -158,10 +164,33 @@ const ChooseDriver = (props) => {
     );
   }
 
-  function ViewStatus() {}
+  function ViewStatus() {
+    return <></>;
+  }
 
   return (
     <div>
+      <Clock
+        format="HH:mm:ss"
+        ticking={true}
+        style={{
+          position: "fixed",
+          top: "0px",
+          right: "0px",
+          backgroundColor: "white",
+          borderRadius: "5px 5px 5px 5px",
+          fontSize: "2vw",
+          padding: "5px",
+        }}
+        onChange={(date) => {
+          if (!clicked && Math.floor(date / 1000) % 5 === 0) {
+            getData();
+          }
+          if (clicked) {
+            getLocation();
+          }
+        }}
+      />
       <Head>
         <title>Choose Driver</title>
         <link rel="icon" href="/pupg-icon.ico" />
@@ -220,9 +249,9 @@ const ChooseDriver = (props) => {
           <img src="../erangel.jpg" alt="test" height="100%" />
         </PrismaZoom>
       </div>
-      {click ? <ViewStatus /> : <ChooseDriver />}
+      {click ? <ViewStatus /> : <ChooseDriverComponent />}
     </div>
   );
 };
 
-export default withRouter(ChooseDriver);
+export default withRouter(ChooseDriverComponent);
