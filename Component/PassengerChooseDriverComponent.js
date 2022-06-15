@@ -32,6 +32,7 @@ const ChooseDriver = (props) => {
   const [x, setX] = useState(-999);
   const [y, setY] = useState(-999);
   const [click, setClick] = useState(false);
+  const [custStatus, setCustStatus] = useState(null);
   const {
     id,
     name,
@@ -98,6 +99,12 @@ const ChooseDriver = (props) => {
       setX(response.data.longitude);
       setY(response.data.latitude);
     });
+    axios({
+      method: "get",
+      url: `http://localhost:8080/customers/${id}`,
+    }).then((response) => {
+      setCustStatus(response.data.status);
+    });
   }
 
   function CustomFooterStatusComponent() {
@@ -108,7 +115,7 @@ const ChooseDriver = (props) => {
             axios({
               method: "post",
               url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
-            }).then(() => {
+            }).then((res) => {
               setClick(true);
               clicked = true;
             });
@@ -165,7 +172,24 @@ const ChooseDriver = (props) => {
   }
 
   function ViewStatus() {
-    return <></>;
+    return (
+      <div
+        style={{
+          height: "60vh",
+          width: "40%",
+          position: "absolute",
+          top: "50%",
+          left: "75%",
+          transform: "translate(-50%,-65%)",
+        }}
+      >
+        <h2>Status:</h2>
+        <h3>Driver Location:</h3>
+        <h3>Longitude: {x}</h3>
+        <h3>Latitude: {y}</h3>
+        <h3>Status: {custStatus}</h3>
+      </div>
+    );
   }
 
   return (
@@ -254,4 +278,4 @@ const ChooseDriver = (props) => {
   );
 };
 
-export default withRouter(ChooseDriverComponent);
+export default withRouter(ChooseDriver);
