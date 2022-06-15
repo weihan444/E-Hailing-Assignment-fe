@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { withRouter } from "next/router";
 import Clock from "react-live-clock";
 import axios from "axios";
+import Link from "next/link";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -34,6 +35,7 @@ const ChooseDriver = (props) => {
   const [click, setClick] = useState(false);
   const [custStatus, setCustStatus] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [reached, setReached] = useState(false);
   const {
     id,
     name,
@@ -47,7 +49,7 @@ const ChooseDriver = (props) => {
   } = props.router.query;
 
   selectedDriver = drivers[select];
-
+  console.log(select);
   useEffect(() => {
     getData();
   }, []);
@@ -107,6 +109,9 @@ const ChooseDriver = (props) => {
       url: `http://localhost:8080/customers/${id}`,
     }).then((response) => {
       setCustStatus(response.data.status);
+      if (response.data.status === "REACHED") {
+        setReached(true);
+      }
     });
   }
 
@@ -194,6 +199,20 @@ const ChooseDriver = (props) => {
             }
           }}
         />
+        <Link href="/Passenger">
+          <Button
+            sx={{ float: "left", margin: "10px" }}
+            variant="contained"
+            onClick={() => {
+              axios({
+                method: "delete",
+                url: `http://localhost:8080/customers/${id}`,
+              });
+            }}
+          >
+            Back
+          </Button>
+        </Link>
       </div>
     );
   }
@@ -210,11 +229,20 @@ const ChooseDriver = (props) => {
           transform: "translate(-50%,-65%)",
         }}
       >
-        <h3>Driver Location -</h3>
+        <h1>Driver Information</h1>
+        <h3>Driver Name: {selectedDriver.name}</h3>
         <h3>Longitude: {x}</h3>
         <h3>Latitude: {y}</h3>
-        <h3>Driver Status: {custStatus}</h3>
+        <h3>Expected Arrival Time: {selectedDriver.time}</h3>
+        <h3>Current Status: {custStatus}</h3>
         <h3>Last Update: {lastUpdate}</h3>
+        {reached ? (
+          <Link href="/">
+            <Button sx={{ float: "left", margin: "10px" }} variant="contained">
+              Back
+            </Button>
+          </Link>
+        ) : null}
       </div>
     );
   }

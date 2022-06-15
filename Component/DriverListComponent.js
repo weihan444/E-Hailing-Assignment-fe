@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
+import Clock from "react-live-clock";
 
 const columns = [
   { field: "name", headerName: "Driver", sortable: false, width: 300 },
@@ -33,10 +34,11 @@ const columns = [
 const DriverList = () => {
   const [tableData, setTableData] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   function CustomFooterStatusComponent() {
     return (
-      <div>
+      <div style={{ display: "flex", flexDirectioin: "row" }}>
         <Link href="/Admin">
           <IconButton aria-label="back">
             <KeyboardBackspaceIcon />
@@ -60,11 +62,17 @@ const DriverList = () => {
         <IconButton aria-label="edit">
           <EditIcon />
         </IconButton>
+        <h3>Last Update: {lastUpdate}</h3>
       </div>
     );
   }
 
   useEffect(() => {
+    getData();
+    setLastUpdate(new Date().toString().substring(16, 24));
+  }, []);
+
+  function getData() {
     axios({
       method: "get",
       url: "http://localhost:8080/drivers",
@@ -74,7 +82,7 @@ const DriverList = () => {
         setTableData(response.data);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }
 
   return (
     <div>
@@ -82,7 +90,25 @@ const DriverList = () => {
         <title>Driver List</title>
         <link rel="icon" href="/pupg-icon.ico" />
       </Head>
-
+      <Clock
+        format="HH:mm:ss"
+        ticking={true}
+        style={{
+          position: "fixed",
+          top: "0px",
+          right: "0px",
+          backgroundColor: "white",
+          borderRadius: "5px 5px 5px 5px",
+          fontSize: "2vw",
+          padding: "5px",
+        }}
+        onChange={(date) => {
+          if (Math.floor(date / 1000) % 5 === 0) {
+            getData();
+            setLastUpdate(new Date().toString().substring(16, 24));
+          }
+        }}
+      />
       <h1
         style={{
           fontFamily: "cursive",
