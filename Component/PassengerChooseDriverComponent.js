@@ -33,6 +33,7 @@ const ChooseDriver = (props) => {
   const [y, setY] = useState(-999);
   const [click, setClick] = useState(false);
   const [custStatus, setCustStatus] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState(null);
   const {
     id,
     name,
@@ -57,6 +58,7 @@ const ChooseDriver = (props) => {
       url: "http://localhost:8080/drivers/status/available",
     }).then((response) => {
       const expected_time = new Date();
+      setLastUpdate(expected_time?.toString().substring(16, 24));
 
       if (response.data) {
         const data = response.data;
@@ -98,6 +100,7 @@ const ChooseDriver = (props) => {
     }).then((response) => {
       setX(response.data.longitude);
       setY(response.data.latitude);
+      setLastUpdate(new Date().toString().substring(16, 24));
     });
     axios({
       method: "get",
@@ -109,20 +112,44 @@ const ChooseDriver = (props) => {
 
   function CustomFooterStatusComponent() {
     return (
-      <div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         <Button
           onClick={() => {
-            axios({
-              method: "post",
-              url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
-            }).then((res) => {
-              setClick(true);
-              clicked = true;
-            });
+            if (drivers[select]) {
+              axios({
+                method: "post",
+                url: `http://localhost:8080/distance`,
+                data: { driverId: drivers[select].id, customerId: id },
+              }).then((res) => {
+                const expected_time = new Date();
+                const total = res.data;
+                expected_time.setTime(expected_time.getTime() + total * 1000);
+                const hours = expected_time.getHours();
+                const minutes = expected_time.getMinutes();
+                const seconds = expected_time.getSeconds();
+                const processedEAT = `${hours < 10 ? "0" + hours : hours}:${
+                  minutes < 10 ? "0" + minutes : minutes
+                }:${seconds < 10 ? "0" + seconds : seconds}`;
+                if (expected_arrival_time >= processedEAT) {
+                  axios({
+                    method: "post",
+                    url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
+                  }).then(() => {
+                    setClick(true);
+                    clicked = true;
+                  });
+                } else {
+                  alert("This driver no longer fulfils your time requirement.");
+                }
+              });
+            } else {
+              alert("Please select a driver.");
+            }
           }}
         >
           Confirm
         </Button>
+        <h3>Last Update: {lastUpdate}</h3>
       </div>
     );
   }
@@ -187,6 +214,7 @@ const ChooseDriver = (props) => {
         <h3>Longitude: {x}</h3>
         <h3>Latitude: {y}</h3>
         <h3>Driver Status: {custStatus}</h3>
+        <h3>Last Update: {lastUpdate}</h3>
       </div>
     );
   }
