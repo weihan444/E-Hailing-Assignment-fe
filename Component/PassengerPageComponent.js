@@ -17,6 +17,9 @@ import { Alert } from "react-bootstrap";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Clock from "react-live-clock";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -24,6 +27,9 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#263238",
+    },
+    secondary: {
+      main: "#ffffff",
     },
   },
 });
@@ -97,109 +103,118 @@ const PassengerPageComponent = () => {
 
   return (
     <>
-      <Clock
-        format="HH:mm:ss"
-        ticking={true}
-        style={{
-          position: "fixed",
-          top: "0px",
-          right: "0px",
-          backgroundColor: "white",
-          borderRadius: "5px 5px 5px 5px",
-          fontSize: "2vw",
-          padding: "5px",
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          height: "calc(100vh - 80px)",
-          width: "calc(100vh - 80px)",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          margin: "15px",
-          position: "absolute",
-          left: "25%",
-          top: "50%",
-          transform: "translate(-50%,-50%)",
-        }}
-      >
-        <PrismaZoom
-          style={{
-            display: "block",
-            width: "674px",
-            height: "674px",
-          }}
-          maxZoom="8"
+      <ThemeProvider theme={theme}>
+        <IconButton
+          size="small"
+          sx={{ float: "left", marginLeft: "10px" }}
+          color="secondary"
+          href="/"
         >
-          <LocationOnIcon
-            sx={{
-              position: "absolute",
-              left: `${startX}px`,
-              top: `${startY}px`,
-              transform: "translate(-50%, -95%)",
-              color: "powderblue",
-              pointerEvents: "none",
-            }}
-          />
-          <LocationOnIcon
-            sx={{
-              position: "absolute",
-              left: `${endX}px`,
-              top: `${endY}px`,
-              transform: "translate(-50%, -95%)",
-              color: "greenyellow",
-              pointerEvents: "none",
-            }}
-          />
-          <img
-            src="erangel.jpg"
-            alt="test"
-            height="100%"
-            onMouseDownCapture={(e) => {
-              if (start) {
-                setStartX(e.nativeEvent.offsetX);
-                setStartY(e.nativeEvent.offsetY);
-              } else {
-                setEndX(e.nativeEvent.offsetX);
-                setEndY(e.nativeEvent.offsetY);
-              }
-            }}
-          />
-        </PrismaZoom>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Box
-          sx={{
+          <ArrowBackIosIcon />
+          <h5>BACK</h5>
+        </IconButton>
+        <Clock
+          format="HH:mm:ss"
+          ticking={true}
+          style={{
+            position: "fixed",
+            top: "0px",
+            right: "0px",
             backgroundColor: "white",
-            opacity: 0.95,
-            borderRadius: "10px",
-            height: "660px",
-            width: "400px",
+            borderRadius: "20px",
+            fontSize: "2vw",
+            padding: "5px",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            height: "calc(100vh - 80px)",
+            width: "calc(100vh - 80px)",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            margin: "15px",
             position: "absolute",
-            left: "70%",
+            left: "25%",
             top: "50%",
             transform: "translate(-50%,-50%)",
           }}
         >
-          <div
+          <PrismaZoom
             style={{
+              display: "block",
+              width: "674px",
+              height: "674px",
+            }}
+            maxZoom="8"
+          >
+            <LocationOnIcon
+              sx={{
+                position: "absolute",
+                left: `${startX}px`,
+                top: `${startY}px`,
+                transform: "translate(-50%, -95%)",
+                color: "powderblue",
+                pointerEvents: "none",
+              }}
+            />
+            <LocationOnIcon
+              sx={{
+                position: "absolute",
+                left: `${endX}px`,
+                top: `${endY}px`,
+                transform: "translate(-50%, -95%)",
+                color: "greenyellow",
+                pointerEvents: "none",
+              }}
+            />
+            <img
+              src="erangel.jpg"
+              alt="test"
+              height="100%"
+              onMouseDownCapture={(e) => {
+                if (start) {
+                  setStartX(e.nativeEvent.offsetX);
+                  setStartY(e.nativeEvent.offsetY);
+                } else {
+                  setEndX(e.nativeEvent.offsetX);
+                  setEndY(e.nativeEvent.offsetY);
+                }
+              }}
+            />
+          </PrismaZoom>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: "white",
+              opacity: 0.95,
+              borderRadius: "10px",
+              height: "660px",
+              width: "400px",
               position: "absolute",
+              left: "70%",
               top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
+              transform: "translate(-50%,-50%)",
             }}
           >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <ThemeProvider theme={theme}>
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <PersonIcon sx={{ mr: 1, my: 1 }} />
                   <TextField
@@ -222,7 +237,7 @@ const PassengerPageComponent = () => {
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <DirectionsCarIcon sx={{ mr: 1, my: 1 }} />
-                  <FormControl fullWidth>
+                  <FormControl sx={{ width: "80px", paddingRight: "10px" }}>
                     <InputLabel
                       variant="standard"
                       htmlFor="uncontrolled-native"
@@ -241,16 +256,12 @@ const PassengerPageComponent = () => {
                       <option value={6}>6</option>
                     </NativeSelect>
                   </FormControl>
-                </Box>
-                <Space />
-                <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                  <PersonIcon sx={{ mr: 1, my: 1 }} />
+                  <AccessTimeIcon sx={{ mr: 1, my: 1 }} />
                   <TextField
                     variant="standard"
-                    label="Expected Time (Minutes)"
+                    label="Time (sec)"
                     size="small"
                     autoComplete="off"
-                    defaultValue={0}
                     {...register("time", { required: true })}
                   />
                 </Box>
@@ -268,14 +279,12 @@ const PassengerPageComponent = () => {
                       label="Longitude"
                       size="small"
                       value={startX}
-                      {...register("longitude", { required: true })}
                     />
                     <TextField
                       variant="standard"
                       label="Latitude"
                       size="small"
                       value={startY}
-                      {...register("latitude", { required: true })}
                     />
                     <Button
                       sx={{
@@ -298,33 +307,31 @@ const PassengerPageComponent = () => {
                   </i>
                 </p>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                  <Box>
-                    <TextField
-                      variant="standard"
-                      label="Longitude"
-                      size="small"
-                      value={endX}
-                      {...register("dest_longitude", { required: true })}
-                    />
-                    <TextField
-                      variant="standard"
-                      label="Latitude"
-                      size="small"
-                      value={endY}
-                      {...register("dest_latitude", { required: true })}
-                    />
-                    <Button
-                      sx={{
-                        float: "right",
-                        marginTop: "5px",
-                      }}
-                      variant="contained"
-                      onClick={clickEndHandler}
-                      size="small"
-                    >
-                      Set Location
-                    </Button>
-                  </Box>
+                  <TextField
+                    sx={{ paddingRight: "10px", width: "80px" }}
+                    variant="standard"
+                    label="Longitude"
+                    size="small"
+                    value={endX}
+                  />
+                  <TextField
+                    sx={{ paddingRight: "10px", width: "80px" }}
+                    variant="standard"
+                    label="Latitude"
+                    size="small"
+                    value={endY}
+                  />
+                  <Button
+                    sx={{
+                      float: "right",
+                      marginLeft: "5px",
+                    }}
+                    variant="contained"
+                    onClick={clickEndHandler}
+                    size="small"
+                  >
+                    Set
+                  </Button>
                 </Box>
                 <Space />
                 <Link href="/">
@@ -339,11 +346,11 @@ const PassengerPageComponent = () => {
                 >
                   Next
                 </Button>
-              </ThemeProvider>
-            </form>
-          </div>
-        </Box>
-      </div>
+              </form>
+            </div>
+          </Box>
+        </div>
+      </ThemeProvider>
     </>
   );
 };

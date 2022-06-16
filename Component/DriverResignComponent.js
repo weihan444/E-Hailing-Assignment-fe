@@ -50,6 +50,9 @@ function toResign() {
         }
       })
       .catch((error) => console.log(error));
+
+    alert("Thanks for joining us before!");
+    window.location = "/";
   };
 
   return (
