@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import dynamic from "next/dynamic";
 import axios from "axios";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import IconButton from "@mui/material/IconButton";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -21,6 +23,9 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#263238",
+    },
+    secondary: {
+      main: "#ffffff",
     },
   },
 });
@@ -55,82 +60,94 @@ const DriverPageComponent = () => {
     })
       .then((response) => console.log(response))
       .catch((error) => console.log(error));
+
+    alert("Welcome to join our E-Hailing company!");
+    window.location = "/";
   };
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          height: "calc(100vh - 80px)",
-          width: "calc(100vh - 80px)",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          margin: "15px",
-          position: "absolute",
-          left: "25%",
-          top: "50%",
-          transform: "translate(-50%,-50%)",
-        }}
-      >
-        <PrismaZoom
+      <ThemeProvider theme={theme}>
+        <IconButton
+          size="small"
+          sx={{ float: "left", marginLeft: "10px" }}
+          color="secondary"
+          href="/"
+        >
+          <ArrowBackIosIcon />
+          <h5>BACK</h5>
+        </IconButton>
+        <div
           style={{
-            display: "block",
-            width: "674px",
-            height: "674px",
-          }}
-          maxZoom="8"
-        >
-          <LocationOnIcon
-            sx={{
-              position: "absolute",
-              left: `${x}px`,
-              top: `${y}px`,
-              transform: "translate(-50%, -95%)",
-              color: "orange",
-              pointerEvents: "none",
-            }}
-          />
-          <img
-            src="erangel.jpg"
-            alt="test"
-            height="100%"
-            onMouseDownCapture={(e) => {
-              setX(e.nativeEvent.offsetX);
-              setY(e.nativeEvent.offsetY);
-            }}
-          />
-        </PrismaZoom>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "70%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: "white",
-            opacity: [0.9, 0.8, 0.75],
-            borderRadius: "10px",
-            height: "400px",
-            width: "400px",
+            display: "flex",
+            height: "calc(100vh - 80px)",
+            width: "calc(100vh - 80px)",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            margin: "15px",
+            position: "absolute",
+            left: "25%",
+            top: "50%",
+            transform: "translate(-50%,-50%)",
           }}
         >
-          <div
+          <PrismaZoom
             style={{
-              position: "absolute",
-              top: "42%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
+              display: "block",
+              width: "674px",
+              height: "674px",
+            }}
+            maxZoom="8"
+          >
+            <LocationOnIcon
+              sx={{
+                position: "absolute",
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: "translate(-50%, -95%)",
+                color: "orange",
+                pointerEvents: "none",
+              }}
+            />
+            <img
+              src="erangel.jpg"
+              alt="test"
+              height="100%"
+              onMouseDownCapture={(e) => {
+                setX(e.nativeEvent.offsetX);
+                setY(e.nativeEvent.offsetY);
+              }}
+            />
+          </PrismaZoom>
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "70%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: "white",
+              opacity: [0.9, 0.8, 0.75],
+              borderRadius: "10px",
+              height: "400px",
+              width: "400px",
             }}
           >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <ThemeProvider theme={theme}>
+            <div
+              style={{
+                position: "absolute",
+                top: "42%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <Space />
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                   <AccountCircleIcon sx={{ mr: 1, my: 1 }} />
@@ -202,29 +219,29 @@ const DriverPageComponent = () => {
                 >
                   Add
                 </Button>
-              </ThemeProvider>
-            </form>
-          </div>
-        </Box>
+              </form>
+            </div>
+          </Box>
 
-        <div
-          style={{
-            color: "black",
-            float: "right",
-            marginRight: "20px",
-            textShadow:
-              "0 0 10px #ebd9ce, 0 0 20px #ebd9ce, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9",
-          }}
-        >
-          <Link href="/Driver/resign">
-            <a>
-              <b>
-                <u>To Resign . . .</u>
-              </b>
-            </a>
-          </Link>
+          <div
+            style={{
+              color: "black",
+              float: "right",
+              marginRight: "20px",
+              textShadow:
+                "0 0 10px #ebd9ce, 0 0 20px #ebd9ce, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9",
+            }}
+          >
+            <Link href="/Driver/resign">
+              <a>
+                <b>
+                  <u>To Resign . . .</u>
+                </b>
+              </a>
+            </Link>
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     </>
   );
 };
