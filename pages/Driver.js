@@ -1,5 +1,10 @@
-import DriverPageComponent from "../Component/DriverPageComponent";
 import Head from "next/head";
+import dynamic from "next/dynamic";
+
+const DriverPageComponent = dynamic(
+  () => import("../Component/DriverPageComponent"),
+  { ssr: false }
+);
 
 function Driver() {
   return (

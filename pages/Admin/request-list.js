@@ -1,5 +1,10 @@
-import RequestListComponent from '../../Component/RequestListComponent'
+import dynamic from "next/dynamic";
 
-export default function list() {
-    return <RequestListComponent />
+const RequestListComponent = dynamic(
+  () => import("../../Component/RequestListComponent"),
+  { ssr: false }
+);
+
+export default function RequestList() {
+  return <RequestListComponent />;
 }

@@ -64,7 +64,6 @@ const ChooseDriver = (props) => {
   } = props.router.query;
 
   selectedDriver = drivers[select];
-  console.log(select);
   useEffect(() => {
     getData();
   }, []);
@@ -89,23 +88,26 @@ const ChooseDriver = (props) => {
             })
           );
         });
-        Promise.all(promises).then((array) => {
-          array.forEach((res, idx) => {
-            const total = res.data;
-            expected_time.setTime(expected_time.getTime() + total * 1000);
-            const hours = expected_time.getHours();
-            const minutes = expected_time.getMinutes();
-            const seconds = expected_time.getSeconds();
-            data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
-              minutes < 10 ? "0" + minutes : minutes
-            }:${seconds < 10 ? "0" + seconds : seconds}`;
+        Promise.all(promises)
+          .then((array) => {
+            array.forEach((res, idx) => {
+              const total = res.data;
+              expected_time.setTime(expected_time.getTime() + total * 1000);
+              const hours = expected_time.getHours();
+              const minutes = expected_time.getMinutes();
+              const seconds = expected_time.getSeconds();
+              data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
+                minutes < 10 ? "0" + minutes : minutes
+              }:${seconds < 10 ? "0" + seconds : seconds}`;
+            });
+          })
+          .then(() => {
             setDrivers(
               response.data.filter(
                 (r) => r.capacity >= capacity && expected_arrival_time >= r.time
               )
             );
           });
-        });
       }
     });
   }

@@ -36,6 +36,7 @@ function toResign() {
   const onSubmit = (formData) => {
     console.log(formData);
     const { name } = formData;
+    console.log(name);
     axios({
       method: "get",
       url: `http://localhost:8080/drivers?name=${name}`,
@@ -43,16 +44,18 @@ function toResign() {
       .then((response) => {
         const { data } = response;
         if (data && data.length > 0) {
+          console.log(data);
           axios({
             method: "delete",
             url: `http://localhost:8080/drivers/${data[0].id}`,
           });
         }
       })
+      .then(() => {
+        alert("Thanks for joining us before!");
+        window.location = "/";
+      })
       .catch((error) => console.log(error));
-
-    alert("Thanks for joining us before!");
-    window.location = "/";
   };
 
   return (

@@ -1,5 +1,9 @@
-import DriverListComponent from '../../Component/DriverListComponent'
+import dynamic from "next/dynamic";
 
-export default function list() {
-    return <DriverListComponent />
+const DriverListComponent = dynamic(
+  () => import("../../Component/DriverListComponent"),
+  { ssr: false }
+);
+export default function DriverList() {
+  return <DriverListComponent />;
 }
