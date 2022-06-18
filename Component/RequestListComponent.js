@@ -85,7 +85,12 @@ const RequestList = () => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: "url(/request-bg.jpg)",
+        backgroundSize: "cover",
+      }}
+    >
       <Head>
         <title>Request List</title>
         <link rel="icon" href="/pupg-icon.ico" />
@@ -94,11 +99,10 @@ const RequestList = () => {
         format="HH:mm:ss"
         ticking={true}
         style={{
-          position: "fixed",
-          top: "0px",
-          right: "0px",
+          position: "absolute",
+          right: "0%",
           backgroundColor: "white",
-          borderRadius: "5px 5px 5px 5px",
+          borderRadius: "20px",
           fontSize: "2vw",
           padding: "5px",
         }}
@@ -115,12 +119,13 @@ const RequestList = () => {
           textAlign: "center",
           fontStyle: "oblique",
           fontSize: "40px",
+          marginTop: "0px",
         }}
       >
         Request List
       </h1>
 
-      <div style={{ height: "80vh", width: "100%" }}>
+      <div style={{ height: "85.5vh", width: "100%" }}>
         <DataGrid
           rows={tableData}
           columns={columns}
