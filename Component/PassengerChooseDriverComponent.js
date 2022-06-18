@@ -8,6 +8,7 @@ import { withRouter } from "next/router";
 import Clock from "react-live-clock";
 import axios from "axios";
 import Link from "next/link";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -345,7 +346,7 @@ const ChooseDriver = (props) => {
           }}
           maxZoom="8"
         >
-          <LocationOnIcon
+          <DirectionsCarIcon
             sx={{
               position: "absolute",
               left: `${x}px`,

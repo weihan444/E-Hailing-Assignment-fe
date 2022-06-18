@@ -20,6 +20,7 @@ import Clock from "react-live-clock";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
@@ -149,6 +150,16 @@ const PassengerPageComponent = () => {
             }}
             maxZoom="8"
           >
+            <EmojiPeopleIcon
+              sx={{
+                position: "absolute",
+                left: `${startX}px`,
+                top: `${startY}px`,
+                transform: "translate(-50%, -195%)",
+                color: "powderblue",
+                pointerEvents: "none",
+              }}
+            />
             <LocationOnIcon
               sx={{
                 position: "absolute",
@@ -198,7 +209,7 @@ const PassengerPageComponent = () => {
               backgroundColor: "white",
               opacity: 0.95,
               borderRadius: "10px",
-              height: "660px",
+              height: "500px",
               width: "400px",
               position: "absolute",
               left: "70%",
@@ -244,10 +255,7 @@ const PassengerPageComponent = () => {
                     >
                       Capacity
                     </InputLabel>
-                    <NativeSelect
-                      defaultValue={1}
-                      {...register("capacity", { required: true })}
-                    >
+                    <NativeSelect defaultValue={1}>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
                       <option value={3}>3</option>
@@ -258,13 +266,42 @@ const PassengerPageComponent = () => {
                   </FormControl>
                   <AccessTimeIcon sx={{ mr: 1, my: 1 }} />
                   <TextField
+                    sx={{ width: "80px" }}
                     variant="standard"
                     label="Time (sec)"
                     size="small"
                     autoComplete="off"
-                    {...register("time", { required: true })}
+                    {...register("time", {
+                      pattern: {
+                        value: /^[0-9]+$/,
+                      },
+                      required: true,
+                    })}
                   />
                 </Box>
+                {errors.time && (
+                  <Alert variant="danger">
+                    {errors.time?.type === "pattern" && (
+                      <h6
+                        style={{ color: "red", margin: "0px", float: "right" }}
+                      >
+                        Please enter number only
+                      </h6>
+                    )}
+                  </Alert>
+                )}
+                {errors.time && (
+                  <Alert variant="danger">
+                    {errors.time?.type === "required" && (
+                      <h6
+                        style={{ color: "red", margin: "0px", float: "right" }}
+                      >
+                        Estimate time is required
+                      </h6>
+                    )}
+                  </Alert>
+                )}
+
                 <Space />
                 <p style={{ margin: "0px" }}>
                   <i>
@@ -273,31 +310,31 @@ const PassengerPageComponent = () => {
                   </i>
                 </p>
                 <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                  <Box>
-                    <TextField
-                      variant="standard"
-                      label="Longitude"
-                      size="small"
-                      value={startX}
-                    />
-                    <TextField
-                      variant="standard"
-                      label="Latitude"
-                      size="small"
-                      value={startY}
-                    />
-                    <Button
-                      sx={{
-                        float: "right",
-                        marginTop: "5px",
-                      }}
-                      variant="contained"
-                      onClick={clickStartHandler}
-                      size="small"
-                    >
-                      Set location
-                    </Button>
-                  </Box>
+                  <TextField
+                    sx={{ paddingRight: "10px", width: "80px" }}
+                    variant="standard"
+                    label="Longitude"
+                    size="small"
+                    value={startX}
+                  />
+                  <TextField
+                    sx={{ paddingRight: "10px", width: "80px" }}
+                    variant="standard"
+                    label="Latitude"
+                    size="small"
+                    value={startY}
+                  />
+                  <Button
+                    sx={{
+                      float: "right",
+                      marginTop: "5px",
+                    }}
+                    variant="contained"
+                    onClick={clickStartHandler}
+                    size="small"
+                  >
+                    Set
+                  </Button>
                 </Box>
                 <Space />
                 <p style={{ margin: "0px" }}>

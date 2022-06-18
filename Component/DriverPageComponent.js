@@ -100,6 +100,16 @@ const DriverPageComponent = () => {
             }}
             maxZoom="8"
           >
+            <DirectionsCarIcon
+              sx={{
+                position: "absolute",
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: "translate(-50%, -195%)",
+                color: "orange",
+                pointerEvents: "none",
+              }}
+            />
             <LocationOnIcon
               sx={{
                 position: "absolute",
