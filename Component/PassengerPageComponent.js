@@ -10,7 +10,6 @@ import MyLocationIcon from "@mui/icons-material/MyLocation";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
@@ -209,8 +208,8 @@ const PassengerPageComponent = () => {
               backgroundColor: "white",
               opacity: 0.95,
               borderRadius: "10px",
-              height: "500px",
-              width: "400px",
+              height: "450px",
+              width: "370px",
               position: "absolute",
               left: "70%",
               top: "50%",
@@ -255,7 +254,10 @@ const PassengerPageComponent = () => {
                     >
                       Capacity
                     </InputLabel>
-                    <NativeSelect defaultValue={1}>
+                    <NativeSelect
+                      defaultValue={1}
+                      {...register("capacity", { required: true })}
+                    >
                       <option value={1}>1</option>
                       <option value={2}>2</option>
                       <option value={3}>3</option>
@@ -361,7 +363,7 @@ const PassengerPageComponent = () => {
                   <Button
                     sx={{
                       float: "right",
-                      marginLeft: "5px",
+                      marginTop: "5px",
                     }}
                     variant="contained"
                     onClick={clickEndHandler}
@@ -371,17 +373,12 @@ const PassengerPageComponent = () => {
                   </Button>
                 </Box>
                 <Space />
-                <Link href="/">
-                  <Button sx={{ float: "left" }} variant="contained">
-                    Back
-                  </Button>
-                </Link>
                 <Button
                   sx={{ float: "right" }}
                   type="submit"
                   variant="contained"
                 >
-                  Next
+                  Confirm
                 </Button>
               </form>
             </div>

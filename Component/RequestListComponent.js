@@ -61,7 +61,17 @@ const RequestList = () => {
         <IconButton aria-label="edit">
           <EditIcon />
         </IconButton>
-        <h3>Last Update: {lastUpdate}</h3>
+        <h2
+          style={{
+            backgroundColor: "lightyellow",
+            borderRadius: "7px",
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%,-40%)",
+          }}
+        >
+          Last Update: {lastUpdate}
+        </h2>
       </div>
     );
   }
@@ -130,6 +140,11 @@ const RequestList = () => {
           rows={tableData}
           columns={columns}
           checkboxSelection
+          sx={{
+            backgroundColor: "rgb(255,239,192,0.3)",
+            color: "black",
+            position: "center",
+          }}
           disableColumnMenu
           components={{
             Footer: CustomFooterStatusComponent,

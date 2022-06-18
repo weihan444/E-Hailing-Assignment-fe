@@ -1,125 +1,150 @@
-import { Button } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import { useForm } from "react-hook-form";
-import { Alert } from "react-bootstrap";
+import { DataGrid } from "@mui/x-data-grid";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import axios from "axios";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
     primary: {
       main: "#263238",
     },
+    secondary: {
+      main: "#ffffff",
+    },
   },
 });
 
-function Space() {
-  return (
-    <Box
-      sx={{
-        height: 30,
-        backgroundColor: (theme) => theme.palette.mode === "none",
-      }}
-    />
-  );
-}
+const columns = [
+  { field: "name", headerName: "Driver", sortable: true, width: 200 },
+  { field: "capacity", headerName: "Capacity", width: 100 },
+  { field: "longitude", headerName: "Location", sortable: false, width: 90 },
+  { field: "latitude", headerName: "", sortable: false, width: 90 },
+  {
+    field: "rating",
+    headerName: "Rating",
+    sortable: false,
+    width: 100,
+    valueGetter: (params) => {
+      if (params.row.rating !== 0 && params.row.rating !== 0) {
+        const rating = params.row.rating / params.row.ratingCount;
+        return rating.toFixed(1);
+      }
+      return "0.0";
+    },
+  },
+];
 
-function toResign() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const ResignList = () => {
+  const [tableData, setTableData] = useState([]);
+  const [selectionModel, setSelectionModel] = useState([]);
 
-  const onSubmit = (formData) => {
-    console.log(formData);
-    const { name } = formData;
-    console.log(name);
+  useEffect(() => {
+    getData();
+  }, []);
+
+  function getData() {
     axios({
       method: "get",
-      url: `http://localhost:8080/drivers?name=${name}`,
+      url: "http://localhost:8080/drivers",
     })
       .then((response) => {
-        const { data } = response;
-        if (data && data.length > 0) {
-          console.log(data);
-          axios({
-            method: "delete",
-            url: `http://localhost:8080/drivers/${data[0].id}`,
-          });
-        }
-      })
-      .then(() => {
-        alert("Thanks for joining us before!");
-        window.location = "/";
+        console.log(response);
+        setTableData(response.data);
       })
       .catch((error) => console.log(error));
-  };
+  }
 
   return (
-    <div>
-      <p
-        style={{
-          textAlign: "center",
-          textShadow:
-            "0 0 10px #f5db8e, 0 0 20px #f5db8e, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9",
-          fontFamily: "fantasy",
-          fontSize: "30px",
-        }}
-      >
-        <b>RESIGN</b>
-      </p>
-      <Box
-        sx={{
-          backgroundColor: "white",
-          opacity: [0.9, 0.8, 0.75],
-          borderRadius: "10px",
-          height: "200px",
-          width: "400px",
-        }}
-      >
-        <div
+    <div
+      style={{
+        backgroundImage: "url(/resign-bg.jpg)",
+        backgroundSize: "cover",
+        height: "100vh",
+      }}
+    >
+      <Head>
+        <title>Driver List</title>
+        <link rel="icon" href="/pupg-icon.ico" />
+      </Head>
+
+      <ThemeProvider theme={theme}>
+        <IconButton
+          size="small"
+          sx={{ float: "left", marginLeft: "10px" }}
+          color="secondary"
+          href="/Driver"
+        >
+          <ArrowBackIosIcon />
+          <h5>BACK</h5>
+        </IconButton>
+
+        <h1
           style={{
-            position: "absolute",
-            top: "58%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            fontFamily: "cursive",
+            textAlign: "center",
+            fontStyle: "oblique",
+            fontSize: "40px",
+            marginTop: "0px",
+            paddingTop: 50,
+            textShadow:
+              "0 0 10px #ebd9ce, 0 0 20px #ebd9ce, 0 0 30px #ede0d8, 0 0 40px #f5ede9, 0 0 50px #f5ede9",
           }}
         >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ThemeProvider theme={theme}>
-              <Space />
-              <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-                <AccountCircleIcon sx={{ mr: 1, my: 1 }} />
-                <TextField
-                  variant="standard"
-                  label="Name"
-                  size="small"
-                  autoComplete="off"
-                  {...register("name", { required: true })}
-                />
-              </Box>
-              {errors.name && (
-                <Alert variant="danger">
-                  {errors.name?.type === "required" && (
-                    <h6 style={{ color: "red", margin: "0px" }}>
-                      Name is required
-                    </h6>
-                  )}
-                </Alert>
-              )}
-              <Space />
-              <Button sx={{ float: "right" }} type="submit" variant="contained">
-                Confirm
-              </Button>
-            </ThemeProvider>
-          </form>
+          RESIGN
+        </h1>
+
+        <div
+          style={{
+            height: "380px",
+            width: "600px",
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <DataGrid
+            rows={tableData}
+            columns={columns}
+            disableColumnMenu
+            hideFooter
+            sx={{
+              backgroundColor: "rgb(255,255,255, 0.9)",
+              color: "black",
+              position: "center",
+              borderRadius: 5,
+              overflow: "hidden",
+            }}
+            onSelectionModelChange={(ids) => {
+              setSelectionModel(ids);
+            }}
+          />
+
+          <Button
+            variant="contained"
+            sx={{ float: "right", marginTop: 1 }}
+            onClick={() => {
+              const selectedIDs = new Set(selectionModel);
+              selectedIDs.forEach((id) => {
+                axios({
+                  method: "delete",
+                  url: `http://localhost:8080/drivers/${id}`,
+                })
+                  .then(alert("Thanks for joining us!"))
+                  .then((window.location = "/"));
+              });
+              setTableData((r) => r.filter((x) => !selectedIDs.has(x.id)));
+            }}
+          >
+            Confirm
+          </Button>
         </div>
-      </Box>
+      </ThemeProvider>
     </div>
   );
-}
+};
 
-export default toResign;
+export default ResignList;

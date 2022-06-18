@@ -19,7 +19,7 @@ const columns = [
     field: "customer",
     headerName: "Customer",
     sortable: false,
-    width: 300,
+    width: 260,
     valueGetter: (params) => {
       console.log(params);
       let name = "";
@@ -75,7 +75,17 @@ const DriverList = () => {
         <IconButton aria-label="edit">
           <EditIcon />
         </IconButton>
-        <h3>Last Update: {lastUpdate}</h3>
+        <h2
+          style={{
+            backgroundColor: "lightgrey",
+            borderRadius: "7px",
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%,-40%)",
+          }}
+        >
+          Last Update: {lastUpdate}
+        </h2>
       </div>
     );
   }
@@ -98,7 +108,12 @@ const DriverList = () => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: "url(/driverlist-bg.jpg)",
+        backgroundSize: "cover",
+      }}
+    >
       <Head>
         <title>Driver List</title>
         <link rel="icon" href="/pupg-icon.ico" />
@@ -111,7 +126,7 @@ const DriverList = () => {
           top: "0px",
           right: "0px",
           backgroundColor: "white",
-          borderRadius: "5px 5px 5px 5px",
+          borderRadius: "20px",
           fontSize: "2vw",
           padding: "5px",
         }}
@@ -128,16 +143,23 @@ const DriverList = () => {
           textAlign: "center",
           fontStyle: "oblique",
           fontSize: "40px",
+          marginTop: "0px",
         }}
       >
         Drivers List
       </h1>
 
-      <div style={{ height: "80vh", width: "100%" }}>
+      <div style={{ height: "85.5vh", width: "100%" }}>
         <DataGrid
           rows={tableData}
           columns={columns}
           checkboxSelection
+          sx={{
+            backgroundColor: "rgb(255,255,255,0.3)",
+            color: "black",
+            position: "center",
+            overflow: "hidden",
+          }}
           components={{
             Footer: CustomFooterStatusComponent,
           }}
