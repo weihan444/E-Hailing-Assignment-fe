@@ -57,6 +57,7 @@ let selectedDriver = null;
 
 const ChooseDriver = (props) => {
   const [select, setSelection] = useState(-1);
+  const [selectedId, setSelectedId] = useState(-1);
   const [drivers, setDrivers] = useState([]);
   const [x, setX] = useState(-999);
   const [y, setY] = useState(-999);
@@ -89,7 +90,6 @@ const ChooseDriver = (props) => {
       url: "http://localhost:8080/drivers/status/available",
     }).then((response) => {
       const expected_time = new Date();
-      setLastUpdate(expected_time?.toString().substring(16, 24));
 
       if (response.data) {
         const data = response.data;
@@ -103,26 +103,27 @@ const ChooseDriver = (props) => {
             })
           );
         });
-        Promise.all(promises)
-          .then((array) => {
-            array.forEach((res, idx) => {
-              const total = res.data;
-              expected_time.setTime(expected_time.getTime() + total * 1000);
-              const hours = expected_time.getHours();
-              const minutes = expected_time.getMinutes();
-              const seconds = expected_time.getSeconds();
-              data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }:${seconds < 10 ? "0" + seconds : seconds}`;
-            });
-          })
-          .then(() => {
-            setDrivers(
-              response.data.filter(
-                (r) => r.capacity >= capacity && expected_arrival_time >= r.time
-              )
-            );
+        Promise.all(promises).then((array) => {
+          array.forEach((res, idx) => {
+            const total = res.data;
+            expected_time.setTime(expected_time.getTime() + total * 1000);
+            const hours = expected_time.getHours();
+            const minutes = expected_time.getMinutes();
+            const seconds = expected_time.getSeconds();
+            data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
+              minutes < 10 ? "0" + minutes : minutes
+            }:${seconds < 10 ? "0" + seconds : seconds}`;
           });
+        });
+        Promise.allSettled(promises).then(() => {
+          console.log("Updated");
+          setLastUpdate(expected_time?.toString().substring(16, 24));
+          setDrivers(
+            response.data.filter(
+              (r) => r.capacity >= capacity && expected_arrival_time >= r.time
+            )
+          );
+        });
       }
     });
   }
@@ -179,11 +180,13 @@ const ChooseDriver = (props) => {
           }}
           disableColumnMenu
           hideFooter
+          selectionModel={selectedId}
           onSelectionModelChange={(ids) => {
             const selectedID = ids[0];
             if (drivers) {
               drivers.forEach((driver, idx) => {
                 if (driver.id === selectedID) {
+                  setSelectedId(selectedID);
                   setSelection(idx);
                   setX(driver.longitude);
                   setY(driver.latitude);
