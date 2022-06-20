@@ -129,8 +129,8 @@ const PassengerPageComponent = () => {
         <div
           style={{
             display: "flex",
-            height: "calc(100vh - 150px)",
-            width: "calc(100vh - 150px)",
+            height: "calc(100vh - 80px)",
+            width: "calc(100vh - 80px)",
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
