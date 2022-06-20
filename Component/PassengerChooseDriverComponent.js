@@ -253,25 +253,35 @@ const ChooseDriver = (props) => {
     return (
       <div
         style={{
-          height: "60vh",
+          height: "500px",
           width: "40%",
           position: "absolute",
           top: "50%",
           left: "75%",
-          transform: "translate(-50%,-65%)",
+          transform: "translate(-50%,-50%)",
           display: "flex",
           flexDirection: "column",
           backgroundColor: "rgb(255,255,255,0.7)",
           borderRadius: "15px",
         }}
       >
-        <h1>Driver Information</h1>
-        <h3>Driver Name: {selectedDriver.name}</h3>
-        <h3>Longitude: {x}</h3>
-        <h3>Latitude: {y}</h3>
-        <h3>Expected Arrival Time: {selectedDriver.time}</h3>
-        <h3>Current Status: {custStatus}</h3>
-        <h3>Last Update: {lastUpdate}</h3>
+        <h1 style={{ margin: "10px", color: "brown", paddingLeft: "15px" }}>
+          Driver Information
+        </h1>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Driver Name: {selectedDriver.name}
+        </h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>Longitude: {x}</h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>Latitude: {y}</h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Expected Arrival Time: {selectedDriver.time}
+        </h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Current Status: {custStatus}
+        </h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Last Update: {lastUpdate}
+        </h3>
         {reached ? (
           <>
             <Typography component="legend">Rate Driver</Typography>
@@ -283,7 +293,12 @@ const ChooseDriver = (props) => {
               }}
             />
             <Button
-              sx={{ float: "left", margin: "10px", width: "30%" }}
+              sx={{
+                float: "left",
+                margin: "10px",
+                width: "30%",
+                paddingLeft: "15px",
+              }}
               variant="contained"
               disabled={disableButton}
               onClick={() => {
@@ -358,8 +373,8 @@ const ChooseDriver = (props) => {
         <div
           style={{
             display: "flex",
-            height: "calc(100vh - 150px)",
-            width: "calc(100vh - 150px)",
+            height: "calc(100vh - 80px)",
+            width: "calc(100vh - 80px)",
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",
