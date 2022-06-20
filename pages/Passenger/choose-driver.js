@@ -8,7 +8,13 @@ const PCDC = dynamic(
 
 function DriverInfo() {
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: "url(/passenger-bg.jpg)",
+        backgroundSize: "cover",
+        height: "100vh",
+      }}
+    >
       <Head>
         <title>Driver</title>
         <link rel="icon" href="../pupg-icon.ico" />

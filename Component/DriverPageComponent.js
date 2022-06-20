@@ -80,8 +80,8 @@ const DriverPageComponent = () => {
         <div
           style={{
             display: "flex",
-            height: "calc(100vh - 80px)",
-            width: "calc(100vh - 80px)",
+            height: "calc(100vh - 150px)",
+            width: "calc(100vh - 150px)",
             alignItems: "center",
             justifyContent: "center",
             overflow: "hidden",

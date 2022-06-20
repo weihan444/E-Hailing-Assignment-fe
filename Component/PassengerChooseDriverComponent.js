@@ -9,25 +9,39 @@ import Clock from "react-live-clock";
 import axios from "axios";
 import Link from "next/link";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import IconButton from "@mui/material/IconButton";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const PrismaZoom = dynamic(() => import("react-prismazoom"), { ssr: false });
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#263238",
+    },
+    secondary: {
+      main: "#ffffff",
+    },
+  },
+});
+
 const columns = [
-  { field: "name", headerName: "Driver", sortable: false, width: 150 },
-  { field: "capacity", headerName: "Capacity", width: 90 },
-  { field: "longitude", headerName: "Longitude", sortable: false, width: 140 },
-  { field: "latitude", headerName: "Latitude", sortable: false, width: 140 },
+  { field: "name", headerName: "Driver", sortable: false, width: 130 },
+  { field: "capacity", headerName: "Capacity", width: 80 },
+  { field: "longitude", headerName: "Location", sortable: false, width: 75 },
+  { field: "latitude", headerName: "", sortable: false, width: 75 },
   {
     field: "time",
-    headerName: "Expected Arrival Time",
+    headerName: "Arrival Time",
     sortable: true,
-    width: 140,
+    width: 120,
   },
   {
     field: "rating",
     headerName: "Rating",
     sortable: false,
-    width: 140,
+    width: 85,
     valueGetter: (params) => {
       if (params.row.rating !== 0 && params.row.rating !== 0) {
         const rating = params.row.rating / params.row.ratingCount;
@@ -43,6 +57,7 @@ let selectedDriver = null;
 
 const ChooseDriver = (props) => {
   const [select, setSelection] = useState(-1);
+  const [selectedId, setSelectedId] = useState(-1);
   const [drivers, setDrivers] = useState([]);
   const [x, setX] = useState(-999);
   const [y, setY] = useState(-999);
@@ -75,7 +90,6 @@ const ChooseDriver = (props) => {
       url: "http://localhost:8080/drivers/status/available",
     }).then((response) => {
       const expected_time = new Date();
-      setLastUpdate(expected_time?.toString().substring(16, 24));
 
       if (response.data) {
         const data = response.data;
@@ -89,26 +103,27 @@ const ChooseDriver = (props) => {
             })
           );
         });
-        Promise.all(promises)
-          .then((array) => {
-            array.forEach((res, idx) => {
-              const total = res.data;
-              expected_time.setTime(expected_time.getTime() + total * 1000);
-              const hours = expected_time.getHours();
-              const minutes = expected_time.getMinutes();
-              const seconds = expected_time.getSeconds();
-              data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }:${seconds < 10 ? "0" + seconds : seconds}`;
-            });
-          })
-          .then(() => {
-            setDrivers(
-              response.data.filter(
-                (r) => r.capacity >= capacity && expected_arrival_time >= r.time
-              )
-            );
+        Promise.all(promises).then((array) => {
+          array.forEach((res, idx) => {
+            const total = res.data;
+            expected_time.setTime(expected_time.getTime() + total * 1000);
+            const hours = expected_time.getHours();
+            const minutes = expected_time.getMinutes();
+            const seconds = expected_time.getSeconds();
+            data[idx].time = `${hours < 10 ? "0" + hours : hours}:${
+              minutes < 10 ? "0" + minutes : minutes
+            }:${seconds < 10 ? "0" + seconds : seconds}`;
           });
+        });
+        Promise.allSettled(promises).then(() => {
+          console.log("Updated");
+          setLastUpdate(expected_time?.toString().substring(16, 24));
+          setDrivers(
+            response.data.filter(
+              (r) => r.capacity >= capacity && expected_arrival_time >= r.time
+            )
+          );
+        });
       }
     });
   }
@@ -133,10 +148,68 @@ const ChooseDriver = (props) => {
     });
   }
 
-  function CustomFooterStatusComponent() {
+  function ChooseDriverComponent() {
     return (
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div
+        style={{
+          height: "60vh",
+          width: "45%",
+          position: "absolute",
+          top: "50%",
+          left: "75%",
+          transform: "translate(-50%,-65%)",
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "cursive",
+            textAlign: "center",
+            fontStyle: "oblique",
+            fontSize: "30px",
+          }}
+        >
+          Choose Your Driver
+        </h1>
+        <DataGrid
+          rows={drivers}
+          columns={columns}
+          sx={{
+            backgroundColor: "rgb(255,255,255,0.7)",
+            overflow: "hidden",
+            borderRadius: "15px",
+          }}
+          disableColumnMenu
+          hideFooter
+          selectionModel={selectedId}
+          onSelectionModelChange={(ids) => {
+            const selectedID = ids[0];
+            if (drivers) {
+              drivers.forEach((driver, idx) => {
+                if (driver.id === selectedID) {
+                  setSelectedId(selectedID);
+                  setSelection(idx);
+                  setX(driver.longitude);
+                  setY(driver.latitude);
+                }
+              });
+            }
+          }}
+        />
+        <h3
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            backgroundColor: "powderblue",
+            borderRadius: "10px",
+            padding: "5px",
+          }}
+        >
+          Last Update: {lastUpdate}
+        </h3>
         <Button
+          variant="contained"
+          sx={{ margin: "5px", float: "right" }}
           onClick={() => {
             if (drivers[select]) {
               axios({
@@ -172,65 +245,6 @@ const ChooseDriver = (props) => {
         >
           Confirm
         </Button>
-        <h3>Last Update: {lastUpdate}</h3>
-      </div>
-    );
-  }
-  function ChooseDriverComponent() {
-    return (
-      <div
-        style={{
-          height: "60vh",
-          width: "40%",
-          position: "absolute",
-          top: "50%",
-          left: "75%",
-          transform: "translate(-50%,-65%)",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "cursive",
-            textAlign: "center",
-            fontStyle: "oblique",
-            fontSize: "30px",
-          }}
-        >
-          Choose Your Driver
-        </h1>
-        <DataGrid
-          rows={drivers}
-          columns={columns}
-          components={{
-            Footer: CustomFooterStatusComponent,
-          }}
-          onSelectionModelChange={(ids) => {
-            const selectedID = ids[0];
-            if (drivers) {
-              drivers.forEach((driver, idx) => {
-                if (driver.id === selectedID) {
-                  setSelection(idx);
-                  setX(driver.longitude);
-                  setY(driver.latitude);
-                }
-              });
-            }
-          }}
-        />
-        <Link href="/Passenger">
-          <Button
-            sx={{ float: "left", margin: "10px" }}
-            variant="contained"
-            onClick={() => {
-              axios({
-                method: "delete",
-                url: `http://localhost:8080/customers/${id}`,
-              });
-            }}
-          >
-            Back
-          </Button>
-        </Link>
       </div>
     );
   }
@@ -247,6 +261,8 @@ const ChooseDriver = (props) => {
           transform: "translate(-50%,-65%)",
           display: "flex",
           flexDirection: "column",
+          backgroundColor: "rgb(255,255,255,0.7)",
+          borderRadius: "15px",
         }}
       >
         <h1>Driver Information</h1>
@@ -297,86 +313,103 @@ const ChooseDriver = (props) => {
 
   return (
     <div>
-      <Clock
-        format="HH:mm:ss"
-        ticking={true}
-        style={{
-          position: "fixed",
-          top: "0px",
-          right: "0px",
-          backgroundColor: "white",
-          borderRadius: "5px 5px 5px 5px",
-          fontSize: "2vw",
-          padding: "5px",
-        }}
-        onChange={(date) => {
-          if (!clicked && Math.floor(date / 1000) % 5 === 0) {
-            getData();
-          }
-          if (clicked) {
-            getLocation();
-          }
-        }}
-      />
-      <Head>
-        <title>Choose Driver</title>
-        <link rel="icon" href="/pupg-icon.ico" />
-      </Head>
-
-      <div
-        style={{
-          display: "flex",
-          height: "calc(100vh - 80px)",
-          width: "calc(100vh - 80px)",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          margin: "15px",
-          position: "absolute",
-          left: "25%",
-          top: "50%",
-          transform: "translate(-50%,-50%)",
-        }}
-      >
-        <PrismaZoom
-          style={{
-            display: "block",
-            width: "674px",
-            height: "674px",
+      <ThemeProvider theme={theme}>
+        <IconButton
+          color="secondary"
+          size="small"
+          href="/Passenger"
+          sx={{ float: "left", marginLeft: "10px" }}
+          onClick={() => {
+            axios({
+              method: "delete",
+              url: `http://localhost:8080/customers/${id}`,
+            });
           }}
-          maxZoom="8"
         >
-          <DirectionsCarIcon
-            sx={{
-              position: "absolute",
-              left: `${x}px`,
-              top: `${y}px`,
-              transform: "translate(-50%, -95%)",
-              color: "red",
+          <ArrowBackIosIcon />
+          <h4>Back</h4>
+        </IconButton>
+        <Clock
+          format="HH:mm:ss"
+          ticking={true}
+          style={{
+            position: "fixed",
+            top: "0px",
+            right: "0px",
+            backgroundColor: "white",
+            borderRadius: "5px 5px 5px 5px",
+            fontSize: "2vw",
+            padding: "5px",
+          }}
+          onChange={(date) => {
+            if (!clicked && Math.floor(date / 1000) % 5 === 0) {
+              getData();
+            }
+            if (clicked) {
+              getLocation();
+            }
+          }}
+        />
+        <Head>
+          <title>Choose Driver</title>
+          <link rel="icon" href="/pupg-icon.ico" />
+        </Head>
+
+        <div
+          style={{
+            display: "flex",
+            height: "calc(100vh - 150px)",
+            width: "calc(100vh - 150px)",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            margin: "15px",
+            position: "absolute",
+            left: "25%",
+            top: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        >
+          <PrismaZoom
+            style={{
+              display: "block",
+              width: "674px",
+              height: "674px",
             }}
-          />
-          <LocationOnIcon
-            sx={{
-              position: "absolute",
-              left: `${longitude}px`,
-              top: `${latitude}px`,
-              transform: "translate(-50%, -95%)",
-              color: "powderblue",
-            }}
-          />
-          <LocationOnIcon
-            sx={{
-              position: "absolute",
-              left: `${dest_longitude}px`,
-              top: `${dest_latitude}px`,
-              transform: "translate(-50%, -95%)",
-              color: "greenyellow",
-            }}
-          />
-          <img src="../erangel.jpg" alt="test" height="100%" />
-        </PrismaZoom>
-      </div>
-      {click ? <ViewStatus /> : <ChooseDriverComponent />}
+            maxZoom="8"
+          >
+            <DirectionsCarIcon
+              sx={{
+                position: "absolute",
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: "translate(-50%, -95%)",
+                color: "red",
+              }}
+            />
+            <LocationOnIcon
+              sx={{
+                position: "absolute",
+                left: `${longitude}px`,
+                top: `${latitude}px`,
+                transform: "translate(-50%, -95%)",
+                color: "powderblue",
+              }}
+            />
+            <LocationOnIcon
+              sx={{
+                position: "absolute",
+                left: `${dest_longitude}px`,
+                top: `${dest_latitude}px`,
+                transform: "translate(-50%, -95%)",
+                color: "greenyellow",
+              }}
+            />
+            <img src="../erangel.jpg" alt="test" height="100%" />
+          </PrismaZoom>
+        </div>
+        {click ? <ViewStatus /> : <ChooseDriverComponent />}
+      </ThemeProvider>
     </div>
   );
 };
