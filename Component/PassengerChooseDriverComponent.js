@@ -360,7 +360,7 @@ const ChooseDriver = (props) => {
             if (!clicked && Math.floor(date / 1000) % 5 === 0) {
               getData();
             }
-            if (clicked) {
+            if (clicked && Math.floor(date / 1000) % 5 === 0) {
               getLocation();
             }
           }}
