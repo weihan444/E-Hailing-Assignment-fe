@@ -214,7 +214,7 @@ const ChooseDriver = (props) => {
             if (drivers[select]) {
               axios({
                 method: "get",
-                url: `http;//localhost:8080/drivers/${drivers[select].id}`,
+                url: `http://localhost:8080/drivers/${drivers[select].id}`,
               }).then((res) => {
                 if (res.data.status === "AVAILABLE") {
                   axios({
