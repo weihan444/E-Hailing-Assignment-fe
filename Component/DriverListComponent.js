@@ -72,9 +72,6 @@ const DriverList = () => {
         >
           <DeleteIcon />
         </IconButton>
-        <IconButton aria-label="edit">
-          <EditIcon />
-        </IconButton>
         <h2
           style={{
             backgroundColor: "lightgrey",

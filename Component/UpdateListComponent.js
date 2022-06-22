@@ -40,7 +40,7 @@ const UpdateList = () => {
   function CustomFooterStatusComponent(props) {
     return (
       <div style={{ display: "flex", flexDirectioin: "row" }}>
-        <Link href="/Admin">
+        <Link href="/Passenger">
           <IconButton aria-label="back">
             <KeyboardBackspaceIcon />
           </IconButton>
@@ -60,7 +60,8 @@ const UpdateList = () => {
         </IconButton>
         <h2
           style={{
-            backgroundColor: "lightyellow",
+            backgroundColor: "grey",
+            padding: "5px",
             borderRadius: "7px",
             position: "absolute",
             left: "50%",
@@ -94,7 +95,7 @@ const UpdateList = () => {
   return (
     <div
       style={{
-        backgroundImage: "url(/request-bg.jpg)",
+        backgroundImage: "url(/update-bg.jpg)",
         backgroundSize: "cover",
       }}
     >
@@ -129,7 +130,7 @@ const UpdateList = () => {
           marginTop: "0px",
         }}
       >
-        Request List
+        Update List
       </h1>
 
       <div style={{ height: "85.5vh", width: "100%" }}>
@@ -137,7 +138,7 @@ const UpdateList = () => {
           rows={tableData}
           columns={columns}
           sx={{
-            backgroundColor: "rgb(255,239,192,0.3)",
+            backgroundColor: "rgb(255,255,255,0.7)",
             color: "black",
             position: "center",
           }}
