@@ -338,12 +338,6 @@ const ChooseDriver = (props) => {
           size="small"
           href="/Passenger/register"
           sx={{ float: "left", marginLeft: "10px" }}
-          onClick={() => {
-            axios({
-              method: "delete",
-              url: `http://localhost:8080/customers/${id}`,
-            });
-          }}
         >
           <ArrowBackIosIcon />
           <h4>Back</h4>
