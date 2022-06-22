@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { Alert } from "react-bootstrap";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter, withRouter } from "next/router";
 import Clock from "react-live-clock";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -45,12 +45,13 @@ function Space() {
   );
 }
 
-const PassengerPageComponent = () => {
+const PassengerPageComponent = (props) => {
   const [startX, setStartX] = useState(337);
   const [startY, setStartY] = useState(337);
   const [endX, setEndX] = useState(337);
   const [endY, setEndY] = useState(337);
   const [start, setStart] = useState(true);
+  const { id } = props.router.query;
   const router = useRouter();
 
   const clickStartHandler = () => {
@@ -71,34 +72,60 @@ const PassengerPageComponent = () => {
     const { name, capacity, time } = formData;
     const expected_time = new Date();
     expected_time.setTime(expected_time.getTime() + time * 1000);
-    console.log(expected_time);
     const hours = expected_time.getHours();
     const minutes = expected_time.getMinutes();
     const seconds = expected_time.getSeconds();
-    axios({
-      method: "post",
-      url: "http://localhost:8080/customers",
-      data: {
-        name,
-        capacity,
-        expected_arrival_time: `${hours < 10 ? "0" + hours : hours}:${
-          minutes < 10 ? "0" + minutes : minutes
-        }:${seconds < 10 ? "0" + seconds : seconds}`,
-        longitude: startX,
-        latitude: startY,
-        dest_longitude: endX,
-        dest_latitude: endY,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        const { data } = response;
-        router.push({
-          pathname: "/Passenger/choose-driver",
-          query: data,
-        });
+    if (id) {
+      axios({
+        method: "patch",
+        url: `http://localhost:8080/customers/${id}`,
+        data: {
+          name,
+          capacity,
+          expected_arrival_time: `${hours < 10 ? "0" + hours : hours}:${
+            minutes < 10 ? "0" + minutes : minutes
+          }:${seconds < 10 ? "0" + seconds : seconds}`,
+          longitude: startX,
+          latitude: startY,
+          dest_longitude: endX,
+          dest_latitude: endY,
+        },
       })
-      .catch((error) => console.log(error));
+        .then((response) => {
+          console.log(response);
+          const { data } = response;
+          router.push({
+            pathname: "/Passenger/choose-driver",
+            query: data,
+          });
+        })
+        .catch((error) => console.log(error));
+    } else {
+      axios({
+        method: "post",
+        url: "http://localhost:8080/customers",
+        data: {
+          name,
+          capacity,
+          expected_arrival_time: `${hours < 10 ? "0" + hours : hours}:${
+            minutes < 10 ? "0" + minutes : minutes
+          }:${seconds < 10 ? "0" + seconds : seconds}`,
+          longitude: startX,
+          latitude: startY,
+          dest_longitude: endX,
+          dest_latitude: endY,
+        },
+      })
+        .then((response) => {
+          console.log(response);
+          const { data } = response;
+          router.push({
+            pathname: "/Passenger/choose-driver",
+            query: data,
+          });
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
@@ -108,7 +135,7 @@ const PassengerPageComponent = () => {
           size="small"
           sx={{ float: "left", marginLeft: "10px" }}
           color="secondary"
-          href="/"
+          href="/Passenger"
         >
           <ArrowBackIosIcon />
           <h5>BACK</h5>
@@ -180,7 +207,7 @@ const PassengerPageComponent = () => {
               }}
             />
             <img
-              src="erangel.jpg"
+              src="../erangel.jpg"
               alt="test"
               height="100%"
               onMouseDownCapture={(e) => {
@@ -389,4 +416,4 @@ const PassengerPageComponent = () => {
   );
 };
 
-export default PassengerPageComponent;
+export default withRouter(PassengerPageComponent);
