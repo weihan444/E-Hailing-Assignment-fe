@@ -213,29 +213,42 @@ const ChooseDriver = (props) => {
           onClick={() => {
             if (drivers[select]) {
               axios({
-                method: "post",
-                url: `http://localhost:8080/distance`,
-                data: { driverId: drivers[select].id, customerId: id },
+                method: "get",
+                url: `http://localhost:8080/drivers/${drivers[select].id}`,
               }).then((res) => {
-                const expected_time = new Date();
-                const total = res.data;
-                expected_time.setTime(expected_time.getTime() + total * 1000);
-                const hours = expected_time.getHours();
-                const minutes = expected_time.getMinutes();
-                const seconds = expected_time.getSeconds();
-                const processedEAT = `${hours < 10 ? "0" + hours : hours}:${
-                  minutes < 10 ? "0" + minutes : minutes
-                }:${seconds < 10 ? "0" + seconds : seconds}`;
-                if (expected_arrival_time >= processedEAT) {
+                if (res.data.status === "AVAILABLE") {
                   axios({
                     method: "post",
-                    url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
-                  }).then(() => {
-                    setClick(true);
-                    clicked = true;
+                    url: `http://localhost:8080/distance`,
+                    data: { driverId: drivers[select].id, customerId: id },
+                  }).then((res) => {
+                    const expected_time = new Date();
+                    const total = res.data;
+                    expected_time.setTime(
+                      expected_time.getTime() + total * 1000
+                    );
+                    const hours = expected_time.getHours();
+                    const minutes = expected_time.getMinutes();
+                    const seconds = expected_time.getSeconds();
+                    const processedEAT = `${hours < 10 ? "0" + hours : hours}:${
+                      minutes < 10 ? "0" + minutes : minutes
+                    }:${seconds < 10 ? "0" + seconds : seconds}`;
+                    if (expected_arrival_time >= processedEAT) {
+                      axios({
+                        method: "post",
+                        url: `http://localhost:8080/drivers/${drivers[select]?.id}/fetch/${id}`,
+                      }).then(() => {
+                        setClick(true);
+                        clicked = true;
+                      });
+                    } else {
+                      alert(
+                        "This driver no longer fulfils your time requirement."
+                      );
+                    }
                   });
                 } else {
-                  alert("This driver no longer fulfils your time requirement.");
+                  alert("Driver is now not available.");
                 }
               });
             } else {
