@@ -47,6 +47,21 @@ const UpdateList = () => {
         </Link>
         <IconButton
           onClick={() => {
+            const selectedIDs = new Set(selectionModel);
+            selectedIDs.forEach((id) => {
+              axios({
+                method: "delete",
+                url: `http://localhost:8080/customers/${id}`,
+              });
+            });
+            setTableData((r) => r.filter((x) => !selectedIDs.has(x.id)));
+          }}
+          aria-label="delete"
+        >
+          <DeleteIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => {
             if (selectionModel.length > 0) {
               router.push({
                 pathname: "/Passenger/register",
