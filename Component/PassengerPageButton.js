@@ -32,9 +32,7 @@ export const PassengerPageButton = () => {
         </IconButton>
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            width: "300px",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -44,18 +42,17 @@ export const PassengerPageButton = () => {
           <Box
             sx={{
               "& button": { m: 2 },
-              backgroundColor: "#ffecb3",
-              opacity: [1.0, 1.0, 0.95],
+              backgroundColor: "rgb(255,255,255,0.7)",
               borderRadius: "10px",
               height: "180px",
-              width: "350px",
             }}
           >
             <div
               style={{
+                width: "200px",
                 position: "absolute",
                 top: "50%",
-                left: "42%",
+                left: "45%",
                 transform: "translate(-50%, -50%)",
               }}
             >

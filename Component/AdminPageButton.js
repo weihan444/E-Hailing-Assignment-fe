@@ -9,7 +9,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#8d6e63",
+      main: "#66686b",
     },
     secondary: {
       main: "#ffffff",
@@ -32,9 +32,7 @@ export const AdminPageButton = () => {
         </IconButton>
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            width: "300px",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -44,8 +42,7 @@ export const AdminPageButton = () => {
           <Box
             sx={{
               "& button": { m: 2 },
-              backgroundColor: "#ffecb3",
-              opacity: [1.0, 1.0, 0.95],
+              backgroundColor: "rgb(255,255,255,0.6)",
               borderRadius: "10px",
               height: "180px",
               width: "280px",

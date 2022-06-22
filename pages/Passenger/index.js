@@ -7,7 +7,7 @@ function Passenger() {
   return (
     <div
       style={{
-        backgroundImage: "url(admin-bg.jpg)",
+        backgroundImage: "url(update-bg.png)",
         backgroundSize: "cover",
         height: "100vh",
       }}
