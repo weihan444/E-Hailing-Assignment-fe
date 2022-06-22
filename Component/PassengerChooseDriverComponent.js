@@ -116,8 +116,8 @@ const ChooseDriver = (props) => {
           });
         });
         Promise.allSettled(promises).then(() => {
-          console.log("Updated");
-          setLastUpdate(expected_time?.toString().substring(16, 24));
+          const lastUpdateTime = new Date();
+          setLastUpdate(lastUpdateTime?.toString().substring(16, 24));
           setDrivers(
             response.data.filter(
               (r) => r.capacity >= capacity && expected_arrival_time >= r.time
@@ -271,8 +271,12 @@ const ChooseDriver = (props) => {
         <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
           Driver Name: {selectedDriver.name}
         </h3>
-        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>Longitude: {x}</h3>
-        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>Latitude: {y}</h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Longitude: {x.toFixed(2)}
+        </h3>
+        <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
+          Latitude: {y.toFixed(2)}
+        </h3>
         <h3 style={{ margin: "10px", paddingLeft: "15px" }}>
           Expected Arrival Time: {selectedDriver.time}
         </h3>
@@ -332,7 +336,7 @@ const ChooseDriver = (props) => {
         <IconButton
           color="secondary"
           size="small"
-          href="/Passenger"
+          href="/Passenger/register"
           sx={{ float: "left", marginLeft: "10px" }}
           onClick={() => {
             axios({
